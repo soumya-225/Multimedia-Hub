@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/lightgray"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -21,10 +21,10 @@
             <ImageView
                 android:id="@+id/back"
                 app:srcCompat="@drawable/baseline_arrow_back_24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/baseline_picture_as_pdf_24"
+                android:src="@drawable/baseline_arrow_back_24"
                 android:contentDescription="@string/pdf_viewer_toolbar_back_button_content_description" />
 
             <TextView
@@ -33,7 +33,7 @@
                 android:layout_toEndOf="@+id/back"
                 android:layout_marginStart="14dp"
                 android:layout_centerVertical="true"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:layout_height="wrap_content"
                 android:text="@string/pdf_viewer_toolbar_textview" />
         </RelativeLayout>

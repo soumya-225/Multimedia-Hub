@@ -23,7 +23,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_margin="5dp"
-                android:src="@drawable/pdf_icon"
+                android:src="@drawable/music"
                 android:layout_gravity="center"
                 android:contentDescription="Audio Icon" />
 
@@ -33,18 +33,18 @@
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/pdf_file_name"
+                    android:id="@+id/file_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="File Name"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toTopOf="@+id/pdf_last_modified"
+                    app:layout_constraintBottom_toTopOf="@+id/last_modified"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_editor_absoluteX="5dp" />
 
                 <TextView
-                    android:id="@+id/pdf_file_size"
+                    android:id="@+id/file_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="100.54 KB"
@@ -53,7 +53,7 @@
                     tools:ignore="MissingConstraints" />
 
                 <TextView
-                    android:id="@+id/pdf_last_modified"
+                    android:id="@+id/last_modified"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="01/01/1970"

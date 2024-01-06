@@ -14,19 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
+import java.util.Locale
 
 class PdfFragment() : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var pdfAdapter: PdfAdapter
+    lateinit var pdfAdapter: PdfAdapter
     private lateinit var list: List<File>
     private lateinit var progressBar: ProgressBar
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -34,10 +29,7 @@ class PdfFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_pdf, container, false)
-        val context = activity?.applicationContext
-
         setuprv(view)
-
         return view
     }
 
@@ -45,11 +37,10 @@ class PdfFragment() : Fragment() {
     private fun setuprv(view: View){
         recyclerView = view.findViewById(R.id.recycler_view)!!
         progressBar = view.findViewById(R.id.progressBar)!!
-        list = ArrayList()
+        list = arrayListOf()
         progressBar.visibility = View.VISIBLE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
-        //setupsearch()
 
         Thread {
             try {
@@ -61,7 +52,7 @@ class PdfFragment() : Fragment() {
                 (list as ArrayList<File>).addAll(files)
 
                 activity?.runOnUiThread {
-                    pdfAdapter = this.activity?.let { PdfAdapter(it.applicationContext, list, it) }!!
+                    pdfAdapter = this.activity?.let { PdfAdapter(list, it) }!!
                     recyclerView.adapter = pdfAdapter
                     handleUiRendering()
                 }
@@ -69,6 +60,36 @@ class PdfFragment() : Fragment() {
                 e.printStackTrace()
             }
         }.start()
+
+
+
+    }
+    /*private fun setUpSearch() {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    filter(newText)
+                } else {
+                    Toast.makeText(context, "No File Found", Toast.LENGTH_SHORT).show()
+                }
+                return false
+            }
+        })
+    }*/
+    fun filter(newText: String) {
+        val list1: MutableList<File> = ArrayList()
+
+        for(file: File in list){
+            if (file.name.lowercase(Locale.getDefault()).contains(newText)){
+                list1.add(file)
+            }
+        }
+        pdfAdapter.filterlist(list1)
+
     }
 
     private fun handleUiRendering() {
@@ -85,19 +106,18 @@ class PdfFragment() : Fragment() {
         val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
         val selectionArgs = arrayOf("application/pdf")
-        val cursor: Cursor? = context?.contentResolver?.query(uri, projection, selection, selectionArgs, null)
-        val list = ArrayList<File>()
+        val sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
+        val cursor: Cursor? = context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
+        val list = arrayListOf<File>()
         val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 if (pdfPathIndex != -1) {
-                    val pdfPath = pdfPathIndex?.let { cursor.getString(it) }
-                    val pdfFile = pdfPath?.let { File(it) }
-                    if (pdfFile != null) {
-                        if (pdfFile.exists() && pdfFile.isFile) {
-                            list.add(pdfFile)
-                        }
+                    val pdfPath = cursor.getString(pdfPathIndex!!)
+                    val pdfFile = File(pdfPath)
+                    if (pdfFile.exists() && pdfFile.isFile) {
+                        list.add(pdfFile)
                     }
                 }
             }

@@ -51,7 +51,7 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     private fun showPdf() {
-        pdfView.fromFile(File(path)).nightMode(false).swipeHorizontal(true).load()
+        pdfView.fromFile(File(path)).nightMode(false).swipeHorizontal(false).load()
     }
 
     private fun back() {
@@ -68,11 +68,9 @@ class PdfViewerActivity : AppCompatActivity() {
             path = pathExtra
         }
         else {
-            // Handle the case where the data is not available
             Toast.makeText(this, "Error: Data not available", Toast.LENGTH_SHORT).show()
-            finish() // or handle differently
+            finish()
         }
-
         back()
         fullscreen()
         showPdf()
