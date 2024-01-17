@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -42,7 +45,8 @@
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/video_last_modified"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:layout_editor_absoluteX="5dp" />
+                    tools:layout_editor_absoluteX="5dp"
+                    android:maxLines="1"/>
 
                 <TextView
                     android:id="@+id/video_file_size"

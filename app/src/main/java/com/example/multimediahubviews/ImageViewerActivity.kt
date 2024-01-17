@@ -1,33 +1,40 @@
 package com.example.multimediahubviews
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 
 
-class ImageFullScreenActivity : AppCompatActivity() {
+class ImageViewerActivity : AppCompatActivity() {
     private lateinit var fullImage: ImageView
     private lateinit var image: String
     private lateinit var scaleGestureDetector: ScaleGestureDetector
     private var scaleFactor: Float = 1.0f
+    private lateinit var back: ImageView
+    private lateinit var fileName: TextView
+    private lateinit var title: String
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_full_screen)
 
         fullImage = findViewById(R.id.fullImage)
-
+        fileName = findViewById(R.id.image_name)
+        back = findViewById(R.id.backBtn)
         val intent: Intent = intent
         image = intent.getStringExtra("parseData")!!
+        title = intent.getStringExtra("fileName")!!
+        fileName.text = title
         Glide.with(this).load(image).into(fullImage)
-
-        scaleGestureDetector = ScaleGestureDetector(
-            this,
-            ScaleListener(fullImage, scaleFactor)
-        )
+        scaleGestureDetector = ScaleGestureDetector(this, ScaleListener(fullImage, scaleFactor))
+        back()
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -46,4 +53,7 @@ class ImageFullScreenActivity : AppCompatActivity() {
         }
     }
 
+    private fun back() {
+        back.setOnClickListener {finish()}
+    }
 }

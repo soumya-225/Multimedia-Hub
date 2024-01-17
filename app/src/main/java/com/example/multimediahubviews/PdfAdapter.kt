@@ -11,12 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 
 
-class PdfAdapter(private var list: List<File>, private var activity: Activity): RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
+class PdfAdapter(private var list: List<File>, private var activity: Activity) :
+    RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun filterlist(list: List<File>) {
-        this.list = list
-        this.notifyDataSetChanged()
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var name: TextView
+        var size: TextView
+        var lastModified: TextView
+        init {
+            name = itemView.findViewById(R.id.pdf_file_name)
+            size = itemView.findViewById(R.id.pdf_file_size)
+            lastModified = itemView.findViewById(R.id.pdf_last_modified)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,7 +40,6 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity): 
         holder.size.text = parseFileLength(file.length())
         holder.lastModified.text = convertEpochToDate(file.lastModified())
 
-
         holder.itemView.setOnClickListener {
             val intent = Intent(activity, PdfViewerActivity::class.java)
             intent.putExtra("name", file.name)
@@ -43,14 +48,9 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity): 
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name: TextView
-        var size: TextView
-        var lastModified: TextView
-        init {
-            name = itemView.findViewById(R.id.pdf_file_name)
-            size = itemView.findViewById(R.id.pdf_file_size)
-            lastModified = itemView.findViewById(R.id.pdf_last_modified)
-        }
+    @SuppressLint("NotifyDataSetChanged")
+    fun filterList(list: List<File>) {
+        this.list = list
+        this.notifyDataSetChanged()
     }
 }

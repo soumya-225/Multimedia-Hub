@@ -9,19 +9,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.multimediahubviews.databinding.FragmentPdfBinding
+import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
 import java.util.Locale
 
 class PdfFragment() : Fragment() {
-
     private lateinit var recyclerView: RecyclerView
-    lateinit var pdfAdapter: PdfAdapter
-    private lateinit var list: List<File>
+    private lateinit var pdfAdapter: PdfAdapter
+    lateinit var list: ArrayList<File>
     private lateinit var progressBar: ProgressBar
+    private lateinit var searchView: SearchView
+    lateinit var sortOrder: String
+
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -29,18 +34,25 @@ class PdfFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_pdf, container, false)
-        setuprv(view)
+        setupRecyclerView(view)
+        //pdfAdapter = PdfAdapter(list,requireActivity())
         return view
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
-    private fun setuprv(view: View){
+    private fun setupRecyclerView(view: View){
         recyclerView = view.findViewById(R.id.recycler_view)!!
+        searchView = view.findViewById(R.id.search_view)
         progressBar = view.findViewById(R.id.progressBar)!!
         list = arrayListOf()
         progressBar.visibility = View.VISIBLE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
+        sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
+        setUpSearch()
+
+        //val binding = FragmentPdfBinding.bind(view)
+
 
         Thread {
             try {
@@ -49,7 +61,7 @@ class PdfFragment() : Fragment() {
                 files.sortedWith { o1, o2 ->
                     o2.lastModified().compareTo(o1.lastModified()) }
 
-                (list as ArrayList<File>).addAll(files)
+                list.addAll(files)
 
                 activity?.runOnUiThread {
                     pdfAdapter = this.activity?.let { PdfAdapter(list, it) }!!
@@ -61,10 +73,26 @@ class PdfFragment() : Fragment() {
             }
         }.start()
 
+        /*
+        binding.topAppBar.menu.findItem(R.id.sort_switch).setOnMenuItemClickListener {
+            Toast.makeText(requireContext(), "Sort Files", Toast.LENGTH_SHORT).show()
+            sortOrder = MediaStore.Video.Media.DISPLAY_NAME
+            pdfAdapter.filterList(getAllFiles())
+            true
+        }
 
-
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
+            darkModeState = !darkModeState
+            //Toast.makeText(requireContext(), "Dark Mode", Toast.LENGTH_SHORT).show()
+            if (darkModeState) lightMode()
+            else darkMode()
+            true
+        }*/
     }
-    /*private fun setUpSearch() {
+
+
+
+    private fun setUpSearch() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -79,7 +107,8 @@ class PdfFragment() : Fragment() {
                 return false
             }
         })
-    }*/
+    }
+
     fun filter(newText: String) {
         val list1: MutableList<File> = ArrayList()
 
@@ -88,8 +117,7 @@ class PdfFragment() : Fragment() {
                 list1.add(file)
             }
         }
-        pdfAdapter.filterlist(list1)
-
+        pdfAdapter.filterList(list1)
     }
 
     private fun handleUiRendering() {
@@ -106,7 +134,7 @@ class PdfFragment() : Fragment() {
         val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
         val selectionArgs = arrayOf("application/pdf")
-        val sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
+        //val sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
         val cursor: Cursor? = context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
         val list = arrayListOf<File>()
         val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)

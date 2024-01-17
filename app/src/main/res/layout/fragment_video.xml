@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".VideoFragment"
+    android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <com.google.android.material.appbar.AppBarLayout
+       android:id="@+id/appBarLayout"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:layout_constraintTop_toTopOf="parent">
+
+      <com.google.android.material.appbar.MaterialToolbar
+          android:id="@+id/topAppBar"
+          android:layout_width="match_parent"
+          android:layout_height="?attr/actionBarSize"
+          app:title="MultiMedia Hub"
+          app:menu="@menu/top_app_bar"
+          style="@style/Widget.MaterialComponents.ActionBar.Primary">
+
+         <android.widget.SearchView
+             android:id="@+id/search_view"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_margin="10dp"
+             android:queryHint="Search Videos..."
+             android:queryBackground="@android:color/transparent"
+             android:iconifiedByDefault="false"
+             android:searchIcon="@drawable/baseline_search_24" />
+      </com.google.android.material.appbar.MaterialToolbar>
+   </com.google.android.material.appbar.AppBarLayout>
 
 
-</RelativeLayout>
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/VideoRV"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:scrollbars="vertical"
+       android:scrollbarThumbVertical="@drawable/scroll_icon"/>
+
+</LinearLayout>

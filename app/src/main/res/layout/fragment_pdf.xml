@@ -5,16 +5,47 @@
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PdfFragment"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    tools:context=".PdfFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="MultiMedia Hub"
+            app:menu="@menu/top_app_bar"
+            style="@style/Widget.MaterialComponents.ActionBar.Primary">
+
+            <android.widget.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:queryHint="Search PDFs..."
+                android:queryBackground="@android:color/transparent"
+                android:iconifiedByDefault="false"
+                android:searchIcon="@drawable/baseline_search_24" />
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        tools:listitem="@layout/pdf_rv_item_old" />
+        tools:listitem="@layout/pdf_rv_item_old"
+        android:scrollbars="vertical"
+        android:scrollbarThumbVertical="@drawable/scroll_icon"/>
+
+
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -24,10 +55,10 @@
         android:layout_marginTop="341dp"
         android:layout_marginEnd="182dp"
         android:layout_marginBottom="342dp"
+        android:indeterminateTint="@color/black"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:indeterminateTint="@color/black"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 </LinearLayout>

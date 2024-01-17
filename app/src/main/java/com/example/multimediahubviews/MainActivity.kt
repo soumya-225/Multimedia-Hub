@@ -18,10 +18,17 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.Manifest
+import android.app.Dialog
+import android.os.Binder
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.DialogFragment
+import com.example.multimediahubviews.databinding.FragmentImageBinding
+
+var darkModeState: Boolean = true
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var list: List<File> = ArrayList()
     val context = this
 
     @SuppressLint("ResourceType")
@@ -31,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 binding = ActivityMainBinding.inflate(layoutInflater)
+                setSupportActionBar(binding.topAppBar)
                 setContentView(binding.root)
                 replaceFragment(ImageFragment())
 
@@ -39,11 +47,7 @@ class MainActivity : AppCompatActivity() {
                         R.id.image -> replaceFragment(ImageFragment())
                         R.id.video -> replaceFragment(VideoFragment())
                         R.id.music -> replaceFragment(AudioFragment())
-                        R.id.pdf -> {
-                            val pdfFragment = PdfFragment()
-                            replaceFragment(pdfFragment)
-                            setUpSearch(pdfFragment)
-                        }
+                        R.id.pdf -> replaceFragment(PdfFragment())
                         else -> {}
                     }
                     true
@@ -51,17 +55,6 @@ class MainActivity : AppCompatActivity() {
             }
             else{
                 requestStoragePermissions()
-                /*try{
-                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                    intent.addCategory("android.intent.category.DEFAULT")
-                    intent.setData(Uri.parse(String.format("package: %s",applicationContext,packageName)))
-                    startActivityIfNeeded(intent,101)
-                }catch (e: Exception){
-                    val intent = Intent()
-                    intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
-                    startActivityIfNeeded(intent,101)
-                }*/
-
             }
         }
 
@@ -74,39 +67,10 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun setUpSearch(pdfFragment: PdfFragment) {
-        val searchView: SearchView = findViewById(R.id.search_view)
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    pdfFragment.filter(newText)
-                } else {
-                    Toast.makeText(context, "No File Found", Toast.LENGTH_SHORT).show()
-                }
-                return false
-            }
-        })
-    }
-
-    fun filter(adapter: PdfAdapter, newText:String){
-        val list1 = mutableListOf<File>()
-
-        for(file in list) {
-            if (file.name.lowercase(Locale.getDefault()).contains(newText)){
-                list1.add(file)
-            }
-        }
-        adapter.filterlist(list1)
-    }
-
     private fun requestStoragePermissions() {
         AlertDialog.Builder(this)
             .setTitle("Allow Access to Internal Storage")
-            .setMessage("Internal Stroage Permission is required to access the files")
+            .setMessage("Internal Storage Permission is required to access the files")
             .setPositiveButton("OK") { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
@@ -127,6 +91,30 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+class FragmentDialogBox : DialogFragment() {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return activity?.let {
+            // Use the Builder class for convenient dialog construction.
+            val builder = AlertDialog.Builder(requireContext())
+            builder
+                .setTitle("Sort By:")
+                .setPositiveButton("OK") { dialog, which ->
+                    // START THE GAME!
+                }
+                .setNegativeButton("Cancel") { dialog, which ->
+                    // User cancelled the dialog.
+                }
+                .setSingleChoiceItems(
+                    arrayOf("Name","Date Modified","Size"), 0
+                ){
+                    dialog, which ->
+                }
+            // Create the AlertDialog object and return it.
+            builder.create()
+        } ?: throw IllegalStateException("Activity cannot be null")
+    }
+}
+
 fun parseFileLength(length: Long): String {
     val units = listOf("B", "KB", "MB", "GB")
     var size: Double = length.toDouble()
@@ -142,7 +130,6 @@ fun parseFileLength(length: Long): String {
 fun convertEpochToDate(epochTime: Long): String {
     return try {
         val date = Date(epochTime)
-
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(date)
     } catch (e: Exception) {
@@ -151,3 +138,22 @@ fun convertEpochToDate(epochTime: Long): String {
     }
 }
 
+fun darkMode(){
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+}
+fun lightMode(){
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+}
+
+fun darkModeButton(binding: FragmentImageBinding){
+    darkModeState = !darkModeState
+    if (darkModeState) {
+        lightMode()
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+    }
+    else{
+        darkMode()
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+    }
+
+}

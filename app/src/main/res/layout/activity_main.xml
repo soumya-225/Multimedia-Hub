@@ -10,7 +10,8 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
@@ -20,7 +21,7 @@
             app:menu="@menu/top_app_bar"
             style="@style/Widget.MaterialComponents.ActionBar.Primary">
 
-            <SearchView
+            <android.widget.SearchView
                 android:id="@+id/search_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
                 android:queryHint="Search Files..."
                 android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
-                android:searchIcon="@drawable/baseline_search_24"/>
+                android:searchIcon="@drawable/baseline_search_24" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

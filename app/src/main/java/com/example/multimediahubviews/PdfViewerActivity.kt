@@ -12,7 +12,6 @@ import java.io.File
 
 
 class PdfViewerActivity : AppCompatActivity() {
-
     private lateinit var pdfView: PDFView
     private lateinit var back: ImageView
     lateinit var name: String
@@ -55,11 +54,10 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     private fun back() {
-        back.setOnClickListener { finish()}
+        back.setOnClickListener {finish()}
     }
 
     private fun getIntentData() {
-
         val nameExtra = intent.getStringExtra("name")
         val pathExtra = intent.getStringExtra("path")
 
@@ -71,6 +69,7 @@ class PdfViewerActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: Data not available", Toast.LENGTH_SHORT).show()
             finish()
         }
+
         back()
         fullscreen()
         showPdf()

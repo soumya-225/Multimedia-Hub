@@ -26,5 +26,4 @@
         app:showAsAction="always"
         android:title="@string/sort" />
 
-
 </menu>
