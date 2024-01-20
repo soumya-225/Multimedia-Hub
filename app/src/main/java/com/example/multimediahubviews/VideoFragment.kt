@@ -1,6 +1,7 @@
 package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -21,11 +22,14 @@ import androidx.appcompat.app.ActionBar
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.get
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
 import java.util.Locale
 import java.util.jar.Attributes.Name
+
+var isGridVideo: Boolean = false
 
 
 class VideoFragment : Fragment() {
@@ -33,6 +37,7 @@ class VideoFragment : Fragment() {
     private lateinit var videoAdapter: VideoAdapter
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
+    private var spanCount: Int = 1
     //var darkModeState: Boolean = true
 
     companion object{
@@ -115,6 +120,21 @@ class VideoFragment : Fragment() {
             darkModeState = !darkModeState
             if (darkModeState) lightMode()
             else darkMode()
+            true
+        }
+
+        binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
+            isGridVideo= !isGridVideo
+            spanCount = if (isGridVideo) {
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+                else 3
+            } else 1
+            binding.VideoRV.setHasFixedSize(true)
+            binding.VideoRV.setItemViewCacheSize(10)
+            binding.VideoRV.layoutManager = GridLayoutManager(context,spanCount)
+            videoAdapter = VideoAdapter(requireContext(), videoList)
+            binding.VideoRV.adapter = videoAdapter
+            videoAdapter.filterList(getAllVideos())
             true
         }
 

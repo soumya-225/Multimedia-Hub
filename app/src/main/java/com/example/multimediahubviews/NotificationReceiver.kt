@@ -19,6 +19,7 @@ class NotificationReceiver: BroadcastReceiver() {
             ApplicationClass.NEXT -> prevNextSong(true, context!!)
             ApplicationClass.EXIT -> {
                 AudioPlayer.musicService!!.stopForeground(true)
+                AudioPlayer.musicService!!.mediaPlayer!!.release()
                 AudioPlayer.musicService = null
                 exitProcess(1)
             }
@@ -31,8 +32,9 @@ class NotificationReceiver: BroadcastReceiver() {
     private fun playMusic(){
         AudioPlayer.isPlaying = true
         AudioPlayer.musicService!!.mediaPlayer!!.start()
-        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24)
+        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 1F)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
+        NowPlaying.binding.playPauseBtnNP.setIconResource(R.drawable.baseline_pause_24)
 
     }
 
@@ -40,8 +42,9 @@ class NotificationReceiver: BroadcastReceiver() {
     private fun pauseMusic(){
         AudioPlayer.isPlaying = false
         AudioPlayer.musicService!!.mediaPlayer!!.pause()
-        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_play_arrow_24)
+        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
+        NowPlaying.binding.playPauseBtnNP.setIconResource(R.drawable.baseline_play_arrow_24)
 
     }
 
@@ -49,6 +52,14 @@ class NotificationReceiver: BroadcastReceiver() {
     private fun prevNextSong(increment: Boolean, context: Context){
         setSongPosition(increment)
         AudioPlayer.musicService!!.createMediaPlayer()
+
+        Glide.with(context)
+            .asBitmap()
+            .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
+            .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+            .into(NowPlaying.binding.songImgNP)
+
+        NowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
 
         Glide.with(context)

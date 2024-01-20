@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.github.barteksc.pdfviewer.PDFView
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import java.io.File
 
 
@@ -19,6 +20,8 @@ class PdfViewerActivity : AppCompatActivity() {
     private var ishide = false
     private lateinit var toolbar: Toolbar
     private lateinit var fileName: TextView
+    private lateinit var scroll: ImageView
+    private var sType: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +34,7 @@ class PdfViewerActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         back = findViewById(R.id.back)
         fileName = findViewById(R.id.file_name)
+        scroll = findViewById(R.id.scrollButton)
 
         getIntentData()
     }
@@ -50,11 +54,28 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     private fun showPdf() {
-        pdfView.fromFile(File(path)).nightMode(false).swipeHorizontal(false).load()
+        pdfView
+            .fromFile(File(path))
+            .nightMode(false)
+            .swipeHorizontal(sType)
+            .defaultPage(0)
+            .enableAnnotationRendering(true)
+            .scrollHandle(DefaultScrollHandle(this))
+            .spacing(2)
+            .load()
     }
 
     private fun back() {
         back.setOnClickListener {finish()}
+    }
+
+    private fun scrollType(){
+        scroll.setOnClickListener {
+            sType = !sType
+            if (sType) scroll.setImageResource(R.drawable.baseline_swipe_vertical_24)
+            else scroll.setImageResource(R.drawable.baseline_swipe_24)
+            showPdf()
+        }
     }
 
     private fun getIntentData() {
@@ -71,6 +92,7 @@ class PdfViewerActivity : AppCompatActivity() {
         }
 
         back()
+        scrollType()
         fullscreen()
         showPdf()
     }

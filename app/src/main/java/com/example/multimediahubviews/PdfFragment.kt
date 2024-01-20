@@ -2,16 +2,19 @@ package com.example.multimediahubviews
 
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multimediahubviews.databinding.FragmentPdfBinding
@@ -19,22 +22,89 @@ import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
 import java.util.Locale
 
+var isGridPdf: Boolean = false
 class PdfFragment() : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var pdfAdapter: PdfAdapter
-    lateinit var list: ArrayList<File>
+    private lateinit var list: ArrayList<File>
     private lateinit var progressBar: ProgressBar
     private lateinit var searchView: SearchView
-    lateinit var sortOrder: String
+    private lateinit var sortOrder: String
+    private var spanCount: Int = 1
 
 
-    @SuppressLint("ResourceType")
+    @SuppressLint("ResourceType", "MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_pdf, container, false)
-        setupRecyclerView(view)
+        val binding = FragmentPdfBinding.bind(view)
+        //setupRecyclerView(view)
+
+        recyclerView = view.findViewById(R.id.recycler_view)!!
+        searchView = view.findViewById(R.id.search_view)
+        progressBar = view.findViewById(R.id.progressBar)!!
+        list = arrayListOf()
+
+        sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
+
+
+        val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
+        // recyclerView.adapter = AudioAdapter(audioList, requireContext())
+
+        sortButton.setOnMenuItemClickListener {
+            val menuItemView: View = view.findViewById(R.id.sort_switch)
+            val popupMenu = PopupMenu(context, menuItemView)
+            popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.name -> sortOrder = MediaStore.Video.Media.DISPLAY_NAME
+                    R.id.date_modified -> sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
+                    R.id.size -> sortOrder = MediaStore.Video.Media.SIZE + " DESC"
+                }
+                pdfAdapter.filterList(getAllFiles())
+                true
+            }
+            popupMenu.show()
+            true
+        }
+
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
+            darkModeState = !darkModeState
+            //Toast.makeText(requireContext(), "Dark Mode", Toast.LENGTH_SHORT).show()
+            if (darkModeState) lightMode()
+            else darkMode()
+            true
+        }
+
+        binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
+            isGridPdf = !isGridPdf
+            spanCount = if (isGridImage) {
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+                else 3
+            } else 1
+            recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+            pdfAdapter = PdfAdapter(list, requireActivity())
+            recyclerView.adapter = pdfAdapter
+            pdfAdapter.filterList(getAllFiles())
+            true
+        }
+
+        setUpSearch()
+
+        val files = getAllFiles()
+        list.addAll(files)
+        pdfAdapter = PdfAdapter(list,requireActivity())
+        recyclerView.adapter = pdfAdapter
+
+
+
+        progressBar.visibility = View.VISIBLE
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+
+        getAllFiles()
         //pdfAdapter = PdfAdapter(list,requireActivity())
         return view
     }
@@ -134,7 +204,6 @@ class PdfFragment() : Fragment() {
         val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
         val selectionArgs = arrayOf("application/pdf")
-        //val sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
         val cursor: Cursor? = context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
         val list = arrayListOf<File>()
         val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)

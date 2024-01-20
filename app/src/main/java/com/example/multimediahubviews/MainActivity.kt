@@ -19,11 +19,15 @@ import java.util.Date
 import java.util.Locale
 import android.Manifest
 import android.app.Dialog
+import android.content.res.Configuration
 import android.os.Binder
+import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
 import com.example.multimediahubviews.databinding.FragmentImageBinding
+import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 var darkModeState: Boolean = true
 
@@ -44,10 +48,22 @@ class MainActivity : AppCompatActivity() {
 
                 binding.bottomNavigationView.setOnItemSelectedListener {
                     when (it.itemId) {
-                        R.id.image -> replaceFragment(ImageFragment())
-                        R.id.video -> replaceFragment(VideoFragment())
-                        R.id.music -> replaceFragment(AudioFragment())
-                        R.id.pdf -> replaceFragment(PdfFragment())
+                        R.id.image -> {
+                            replaceFragment(ImageFragment())
+                            binding.nowPlaying.visibility = View.GONE
+                        }
+                        R.id.video -> {
+                            replaceFragment(VideoFragment())
+                            binding.nowPlaying.visibility = View.GONE
+                        }
+                        R.id.music -> {
+                            replaceFragment(AudioFragment())
+                            binding.nowPlaying.visibility = View.VISIBLE
+                        }
+                        R.id.pdf -> {
+                            replaceFragment(PdfFragment())
+                            binding.nowPlaying.visibility = View.GONE
+                        }
                         else -> {}
                     }
                     true
@@ -58,7 +74,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) binding.bottomNavigationView.visibility = View.GONE
+        else binding.bottomNavigationView.visibility = View.VISIBLE
+
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!AudioPlayer.isPlaying && AudioPlayer.musicService != null){
+            AudioPlayer.musicService!!.stopForeground(true)
+            AudioPlayer.musicService!!.mediaPlayer!!.release()
+            AudioPlayer.musicService = null
+            exitProcess(1)
+        }
+    }
+
 
     private fun replaceFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
@@ -91,29 +121,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-class FragmentDialogBox : DialogFragment() {
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            // Use the Builder class for convenient dialog construction.
-            val builder = AlertDialog.Builder(requireContext())
-            builder
-                .setTitle("Sort By:")
-                .setPositiveButton("OK") { dialog, which ->
-                    // START THE GAME!
-                }
-                .setNegativeButton("Cancel") { dialog, which ->
-                    // User cancelled the dialog.
-                }
-                .setSingleChoiceItems(
-                    arrayOf("Name","Date Modified","Size"), 0
-                ){
-                    dialog, which ->
-                }
-            // Create the AlertDialog object and return it.
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }
-}
 
 fun parseFileLength(length: Long): String {
     val units = listOf("B", "KB", "MB", "GB")
@@ -136,6 +143,13 @@ fun convertEpochToDate(epochTime: Long): String {
         e.printStackTrace()
         "Invalid Date"
     }
+}
+
+fun convertToMMSS(duration: String): String {
+    val millis = duration.toLong()
+    return String.format("%02d:%02d",
+        TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
+        TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
 }
 
 fun darkMode(){

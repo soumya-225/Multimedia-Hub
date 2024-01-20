@@ -4,11 +4,11 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,6 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.multimediahubviews.databinding.FragmentImageBinding
 import java.io.File
 import java.util.Locale
+
+var isGridImage: Boolean = false
 
 
 class ImageFragment : Fragment() {
@@ -34,6 +35,7 @@ class ImageFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private lateinit var imageList: ArrayList<ImageModel>
+    private var spanCount: Int = 1
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -70,9 +72,15 @@ class ImageFragment : Fragment() {
         }
 
         binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
-            recyclerView.layoutManager = GridLayoutManager(context, 2)
-            imageAdapterGrid = ImageAdapterGrid(list, requireContext())
-            recyclerView.adapter = imageAdapterGrid
+            isGridImage = !isGridImage
+            spanCount = if (isGridImage) {
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+                else 3
+            } else 1
+            recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+            imageAdapter = ImageAdapter(list, requireContext())
+            recyclerView.adapter = imageAdapter
+            imageAdapter.filterList(getAllImages(requireContext()))
             true
         }
 

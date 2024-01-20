@@ -19,26 +19,26 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:src="@mipmap/ic_launcher"
-            android:id="@+id/imageView2"
+            android:id="@+id/thumbnail"
             android:contentDescription="@string/image_rv_item_content_description"
             android:baselineAlignBottom="true"/>
 
         <TextView
-            android:id="@+id/image_file_name"
+            android:id="@+id/video_file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
             android:visibility="gone"/>
 
         <TextView
-            android:id="@+id/image_file_size"
+            android:id="@+id/video_file_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
             android:visibility="gone"/>
 
         <TextView
-            android:id="@+id/image_last_modified"
+            android:id="@+id/video_last_modified"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""

@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
         android:layout_centerVertical="true"
         android:layout_marginBottom="3dp"
         app:srcCompat="@drawable/pdf_icon"
         android:contentDescription="@string/pdf_rv_item_icon_content_description" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
     <TextView
-        android:id="@+id/file_name"
+        android:id="@+id/pdf_file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="11dp"
+        android:layout_marginBottom="5dp"
         android:layout_toEndOf="@id/imageView"
         android:text="@string/pdf_rv_item_name"
-        android:textSize="15sp"/>
+        android:textSize="16sp"/>
 
-    <TextView
-        android:id="@+id/file_path"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/file_name"
-        android:layout_marginEnd="11dp"
-        android:layout_toEndOf="@id/imageView"
-        android:text="@string/pdf_rv_item_path"
-        android:textSize="12sp"/>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/pdf_file_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100.54 KB"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/pdf_last_modified"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01/01/1970"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/view2"
@@ -43,4 +61,6 @@
         android:layout_below="@+id/file_path"
         android:layout_marginTop="5dp"
         android:background="@color/gray" />
-</RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

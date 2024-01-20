@@ -5,22 +5,31 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.VideoRvItemBinding
+import kotlin.properties.Delegates
 
 class VideoAdapter(private val context: Context, private var videoList: ArrayList<VideoModel>):
     RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
+
+        private lateinit var thumbnail: ImageView
+
 
     class ViewHolder(binding: VideoRvItemBinding): RecyclerView.ViewHolder(binding.root) {
         val title = binding.videoFileName
         val size = binding.videoFileSize
         val lastModified = binding.videoLastModified
-        val image = binding.thumbnail
+        val imageList = binding.thumbnail1
+        val imageGrid = binding.thumbnail2
         val root = binding.root
+        val listCard = binding.videoListCard
+        val gridCard = binding.videoGridCard
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -28,6 +37,16 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (isGridVideo){
+            holder.listCard.visibility = View.GONE
+            holder.gridCard.visibility = View.VISIBLE
+            thumbnail = holder.imageGrid
+        }
+        else{
+            holder.listCard.visibility = View.VISIBLE
+            holder.gridCard.visibility = View.GONE
+            thumbnail = holder.imageList
+        }
         holder.title.text = videoList[position].title
         holder.size.text = parseFileLength(videoList[position].size.toLong())
         holder.lastModified.text = convertEpochToDate(videoList[position].lastModified.toLong()*1000)
@@ -35,7 +54,7 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
             .asBitmap()
             .load(videoList[position].artUri)
             .apply(RequestOptions().placeholder(R.drawable.play).centerCrop())
-            .into(holder.image)
+            .into(thumbnail)
 
         holder.root.setOnClickListener {
             when {

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,8 @@ import com.bumptech.glide.request.RequestOptions
 
 class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var context: Context) :
     RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
+
+        private var layoutFile: Int = R.layout.image_rv_item
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView
@@ -31,12 +32,13 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = LayoutInflater.from(parent.context).inflate(R.layout.image_rv_item, parent, false)
+        layoutFile = if (isGridImage) R.layout.image_rv_item_old
+        else R.layout.image_rv_item
+        val view: View = LayoutInflater.from(parent.context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        Log.d("Tag",imageList.size.toString())
         return imageList.size
 
     }
