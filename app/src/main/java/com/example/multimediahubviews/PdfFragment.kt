@@ -4,8 +4,10 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.database.Cursor
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +15,12 @@ import android.widget.PopupMenu
 import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.multimediahubviews.R.*
 import com.example.multimediahubviews.databinding.FragmentPdfBinding
 import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
@@ -33,12 +37,12 @@ class PdfFragment() : Fragment() {
     private var spanCount: Int = 1
 
 
-    @SuppressLint("ResourceType", "MissingInflatedId")
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_pdf, container, false)
+        val view = inflater.inflate(layout.fragment_pdf, container, false)
         val binding = FragmentPdfBinding.bind(view)
         //setupRecyclerView(view)
 
@@ -56,7 +60,7 @@ class PdfFragment() : Fragment() {
         sortButton.setOnMenuItemClickListener {
             val menuItemView: View = view.findViewById(R.id.sort_switch)
             val popupMenu = PopupMenu(context, menuItemView)
-            popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+            popupMenu.menuInflater.inflate(menu.popup_menu, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.name -> sortOrder = MediaStore.Video.Media.DISPLAY_NAME
@@ -80,14 +84,7 @@ class PdfFragment() : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
             isGridPdf = !isGridPdf
-            spanCount = if (isGridImage) {
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
-                else 3
-            } else 1
-            recyclerView.layoutManager = GridLayoutManager(context, spanCount)
-            pdfAdapter = PdfAdapter(list, requireActivity())
-            recyclerView.adapter = pdfAdapter
-            pdfAdapter.filterList(getAllFiles())
+            setUpView()
             true
         }
 
@@ -99,14 +96,30 @@ class PdfFragment() : Fragment() {
         recyclerView.adapter = pdfAdapter
 
 
-
         progressBar.visibility = View.VISIBLE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
 
         getAllFiles()
+        setUpView()
         //pdfAdapter = PdfAdapter(list,requireActivity())
         return view
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setUpView()
+    }
+
+    private fun setUpView(){
+        spanCount = if (isGridPdf) {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else 1
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+        pdfAdapter = PdfAdapter(list, requireActivity())
+        recyclerView.adapter = pdfAdapter
+        pdfAdapter.filterList(getAllFiles())
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
@@ -222,4 +235,6 @@ class PdfFragment() : Fragment() {
         cursor?.close()
         return list
     }
+
+
 }

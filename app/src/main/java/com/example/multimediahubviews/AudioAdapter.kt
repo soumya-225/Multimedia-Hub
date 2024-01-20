@@ -18,6 +18,8 @@ import com.bumptech.glide.request.RequestOptions
 class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Context) :
     RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
 
+        private var layoutFile = R.layout.audio_rv_item
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView
         var size: TextView
@@ -32,7 +34,9 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view: View = LayoutInflater.from(context).inflate(R.layout.audio_rv_item, parent, false)
+        layoutFile = if (isGridAudio) R.layout.audio_rv_item_grid
+        else R.layout.audio_rv_item
+        val view: View = LayoutInflater.from(context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
     }
 

@@ -58,10 +58,10 @@
         android:layout_margin="10dp"
         android:padding="5dp"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraLarge"
-        android:src="@drawable/photo_gallery"
+        android:src="@drawable/music2"
 
         app:strokeColor="@color/cool_blue"
-        app:strokeWidth="5dp"/>
+        app:strokeWidth="0dp"/>
 
     <!--    Current Song Name-->
     <TextView
@@ -139,7 +139,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            tools:ignore="NestedWeights" />
+            tools:ignore="NestedWeights"/>
 
         <TextView
             android:id="@+id/tvSeekBarEnd"
@@ -181,7 +181,7 @@
             app:tint="@color/cool_pink" />
 
         <!--        Timer Button-->
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/timerBtnPA"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -189,7 +189,7 @@
             android:background="?attr/selectableItemBackground"
             android:contentDescription="Timer Button"
             android:layout_weight="1"
-            app:tint="@color/cool_pink" />
+            app:tint="@color/cool_pink" />-->
 
         <!--        Share Button-->
         <ImageButton
@@ -204,7 +204,7 @@
 
 
         <!--       Volume Button-->
-        <ImageButton
+        <!--<ImageButton
             android:id="@+id/boosterBtnPA"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -212,7 +212,7 @@
             android:background="?attr/selectableItemBackground"
             android:contentDescription="Volume Button"
             android:layout_weight="1"
-            app:tint="@color/cool_pink" />
+            app:tint="@color/cool_pink" />-->
 
     </LinearLayout>
 

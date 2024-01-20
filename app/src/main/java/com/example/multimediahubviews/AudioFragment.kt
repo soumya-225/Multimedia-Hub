@@ -1,7 +1,9 @@
 package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -10,7 +12,9 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multimediahubviews.databinding.FragmentAudioBinding
@@ -19,7 +23,10 @@ import java.io.File
 import java.io.Serializable
 import java.util.Locale
 
+
+var isGridAudio: Boolean = false
 class AudioFragment : Fragment() {
+
 
     companion object{
         var musicListMA: ArrayList<AudioModel> = ArrayList()
@@ -28,12 +35,14 @@ class AudioFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var audioAdapter: AudioAdapter
     private lateinit var sortOrder: String
+    private lateinit var recyclerView: RecyclerView
+    private var spanCount: Int = 1
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_audio, container, false)
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         setHasOptionsMenu(true)
 
@@ -68,6 +77,12 @@ class AudioFragment : Fragment() {
             true
         }
 
+        binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
+            isGridAudio = !isGridAudio
+            setUpView()
+            true
+        }
+
 
         //audioAdapter = AudioAdapter(audioList, requireContext())
         //recyclerView.adapter = audioAdapter
@@ -79,8 +94,25 @@ class AudioFragment : Fragment() {
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = audioAdapter
+        setUpView()
 
         return view
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setUpView()
+    }
+
+    private fun setUpView(){
+        spanCount = if (isGridAudio) {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else 1
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+        audioAdapter = AudioAdapter(audioList,requireContext())
+        recyclerView.adapter = audioAdapter
+        audioAdapter.filterList(getAllAudios())
     }
 
     private fun getAllAudios(): ArrayList<AudioModel>{
@@ -170,5 +202,7 @@ class AudioFragment : Fragment() {
         }
         audioAdapter.filterList(list1)
     }
+
+
 }
 

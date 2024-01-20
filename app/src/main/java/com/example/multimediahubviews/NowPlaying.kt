@@ -42,7 +42,7 @@ class NowPlaying : Fragment() {
             Glide.with(this)
                 .asBitmap()
                 .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-                .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
                 .into(binding.songImgNP)
 
             binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
@@ -70,25 +70,25 @@ class NowPlaying : Fragment() {
             Glide.with(this)
                 .asBitmap()
                 .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-                .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
                 .into(binding.songImgNP)
 
             binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
-            if (AudioPlayer.isPlaying) binding.playPauseBtnNP.setIconResource(R.drawable.baseline_pause_24)
-            else binding.playPauseBtnNP.setIconResource(R.drawable.baseline_play_arrow_24)
+            if (AudioPlayer.isPlaying) binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
+            else binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
         }
     }
 
     private fun playMusic(){
         AudioPlayer.musicService!!.mediaPlayer!!.start()
-        binding.playPauseBtnNP.setIconResource(R.drawable.baseline_pause_24)
+        binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
         AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 1F)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.baseline_pause_24)
         AudioPlayer.isPlaying = true
     }
     private fun pauseMusic() {
         AudioPlayer.musicService!!.mediaPlayer!!.pause()
-        binding.playPauseBtnNP.setIconResource(R.drawable.baseline_play_arrow_24)
+        binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
         AudioPlayer.musicService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
         AudioPlayer.isPlaying = true

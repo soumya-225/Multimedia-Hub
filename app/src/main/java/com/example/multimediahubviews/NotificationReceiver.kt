@@ -34,7 +34,7 @@ class NotificationReceiver: BroadcastReceiver() {
         AudioPlayer.musicService!!.mediaPlayer!!.start()
         AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 1F)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-        NowPlaying.binding.playPauseBtnNP.setIconResource(R.drawable.baseline_pause_24)
+        NowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
 
     }
 
@@ -44,7 +44,7 @@ class NotificationReceiver: BroadcastReceiver() {
         AudioPlayer.musicService!!.mediaPlayer!!.pause()
         AudioPlayer.musicService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
-        NowPlaying.binding.playPauseBtnNP.setIconResource(R.drawable.baseline_play_arrow_24)
+        NowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
 
     }
 
@@ -56,7 +56,7 @@ class NotificationReceiver: BroadcastReceiver() {
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
             .into(NowPlaying.binding.songImgNP)
 
         NowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
@@ -65,7 +65,7 @@ class NotificationReceiver: BroadcastReceiver() {
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
             .into(AudioPlayer.binding.songImgPA)
 
         AudioPlayer.binding.songNamePA.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title

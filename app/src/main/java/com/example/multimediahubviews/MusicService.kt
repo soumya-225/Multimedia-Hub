@@ -86,7 +86,7 @@ class MusicService : Service() {
         val image = if (imgArt != null) {
             BitmapFactory.decodeByteArray(imgArt, 0, imgArt.size)
         } else {
-            BitmapFactory.decodeResource(resources, R.drawable.music)
+            BitmapFactory.decodeResource(resources, R.drawable.musicbg4)
         }
 
         val notification = NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)
@@ -109,16 +109,16 @@ class MusicService : Service() {
             .addAction(R.drawable.baseline_exit_to_app_24, "Exit", exitPendingIntent)
             .build()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             mediaSession.setMetadata(MediaMetadataCompat.Builder()
                 .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, mediaPlayer!!.duration.toLong())
                 .build())
+
             mediaSession.setPlaybackState(PlaybackStateCompat.Builder()
                 .setState(PlaybackStateCompat.STATE_PLAYING, mediaPlayer!!.currentPosition.toLong(), playbackSpeed)
                 .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
                 .build())
-        }
-
+        }*/
 
 
         /*val intent = Intent(this, MusicService::class.java)

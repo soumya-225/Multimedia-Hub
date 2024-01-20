@@ -3,31 +3,22 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.SearchView
-import android.widget.Switch
 import android.widget.Toast
-import android.widget.Toolbar
-import androidx.appcompat.app.ActionBar
-import androidx.core.view.MenuItemCompat
-import androidx.core.view.get
-import androidx.fragment.app.FragmentManager
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
 import java.util.Locale
-import java.util.jar.Attributes.Name
 
 var isGridVideo: Boolean = false
 
@@ -38,11 +29,25 @@ class VideoFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private var spanCount: Int = 1
+    private lateinit var binding: FragmentVideoBinding
     //var darkModeState: Boolean = true
 
     companion object{
         lateinit var videoList: ArrayList<VideoModel>
         var search: Boolean = false
+    }
+
+    private fun setUpView(binding: FragmentVideoBinding) {
+        spanCount = if (isGridVideo) {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else 1
+        binding.VideoRV.setHasFixedSize(true)
+        binding.VideoRV.setItemViewCacheSize(10)
+        binding.VideoRV.layoutManager = GridLayoutManager(context,spanCount)
+        videoAdapter = VideoAdapter(requireContext(), videoList)
+        binding.VideoRV.adapter = videoAdapter
+        videoAdapter.filterList(getAllVideos())
     }
 
     /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,7 +90,7 @@ class VideoFragment : Fragment() {
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_video, container, false)
-        val binding = FragmentVideoBinding.bind(view)
+        binding = FragmentVideoBinding.bind(view)
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
 
         sortButton.setOnMenuItemClickListener {
@@ -125,16 +130,7 @@ class VideoFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
             isGridVideo= !isGridVideo
-            spanCount = if (isGridVideo) {
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
-                else 3
-            } else 1
-            binding.VideoRV.setHasFixedSize(true)
-            binding.VideoRV.setItemViewCacheSize(10)
-            binding.VideoRV.layoutManager = GridLayoutManager(context,spanCount)
-            videoAdapter = VideoAdapter(requireContext(), videoList)
-            binding.VideoRV.adapter = videoAdapter
-            videoAdapter.filterList(getAllVideos())
+            setUpView(binding)
             true
         }
 
@@ -147,6 +143,7 @@ class VideoFragment : Fragment() {
         binding.VideoRV.setItemViewCacheSize(10)
         binding.VideoRV.layoutManager = LinearLayoutManager(requireContext())
         binding.VideoRV.adapter = videoAdapter
+        setUpView(binding)
 
         return view
     }
@@ -221,5 +218,11 @@ class VideoFragment : Fragment() {
             }
         }
         videoAdapter.filterList(list1)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setUpView(binding)
     }
 }

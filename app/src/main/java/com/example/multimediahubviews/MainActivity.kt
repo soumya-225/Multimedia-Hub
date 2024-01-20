@@ -1,31 +1,27 @@
 package com.example.multimediahubviews
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.widget.SearchView
+import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.multimediahubviews.databinding.ActivityMainBinding
-import java.io.File
+import com.example.multimediahubviews.databinding.FragmentImageBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import android.Manifest
-import android.app.Dialog
-import android.content.res.Configuration
-import android.os.Binder
-import android.view.View
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.DialogFragment
-import com.example.multimediahubviews.databinding.FragmentImageBinding
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
@@ -45,43 +41,46 @@ class MainActivity : AppCompatActivity() {
                 setSupportActionBar(binding.topAppBar)
                 setContentView(binding.root)
                 replaceFragment(ImageFragment())
-
                 binding.bottomNavigationView.setOnItemSelectedListener {
                     when (it.itemId) {
                         R.id.image -> {
                             replaceFragment(ImageFragment())
                             binding.nowPlaying.visibility = View.GONE
                         }
+
                         R.id.video -> {
                             replaceFragment(VideoFragment())
                             binding.nowPlaying.visibility = View.GONE
                         }
+
                         R.id.music -> {
                             replaceFragment(AudioFragment())
                             binding.nowPlaying.visibility = View.VISIBLE
                         }
+
                         R.id.pdf -> {
                             replaceFragment(PdfFragment())
                             binding.nowPlaying.visibility = View.GONE
                         }
+
                         else -> {}
                     }
                     true
                 }
-            }
-            else{
+            } else {
                 requestStoragePermissions()
             }
         }
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) binding.bottomNavigationView.visibility = View.GONE
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) binding.bottomNavigationView.visibility =
+            View.GONE
         else binding.bottomNavigationView.visibility = View.VISIBLE
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!AudioPlayer.isPlaying && AudioPlayer.musicService != null){
+        if (!AudioPlayer.isPlaying && AudioPlayer.musicService != null) {
             AudioPlayer.musicService!!.stopForeground(true)
             AudioPlayer.musicService!!.mediaPlayer!!.release()
             AudioPlayer.musicService = null
@@ -90,10 +89,10 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun replaceFragment(fragment: Fragment){
+    private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.Frame_Layout,fragment)
+        fragmentTransaction.replace(R.id.Frame_Layout, fragment)
         fragmentTransaction.commit()
     }
 
@@ -113,7 +112,11 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
-                Toast.makeText(this, "The application cannot work without storage permission", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "The application cannot work without storage permission",
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
             }
             .setCancelable(false)
@@ -147,27 +150,31 @@ fun convertEpochToDate(epochTime: Long): String {
 
 fun convertToMMSS(duration: String): String {
     val millis = duration.toLong()
-    return String.format("%02d:%02d",
+    return String.format(
+        "%02d:%02d",
         TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
-        TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1))
+        TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)
+    )
 }
 
-fun darkMode(){
+fun darkMode() {
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 }
-fun lightMode(){
+
+fun lightMode() {
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 }
 
-fun darkModeButton(binding: FragmentImageBinding){
+fun darkModeButton(binding: FragmentImageBinding) {
     darkModeState = !darkModeState
     if (darkModeState) {
         lightMode()
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
-    }
-    else{
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch)
+            .setIcon(R.drawable.baseline_dark_mode_24)
+    } else {
         darkMode()
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch)
+            .setIcon(R.drawable.baseline_light_mode_24)
     }
 
 }

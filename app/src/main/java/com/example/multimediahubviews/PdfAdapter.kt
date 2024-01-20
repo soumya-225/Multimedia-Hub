@@ -15,6 +15,8 @@ import java.io.File
 class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
 
+        private var layoutFile = R.layout.pdf_rv_item
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var name: TextView
         var size: TextView
@@ -27,7 +29,9 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.pdf_rv_item, parent, false)
+        if (isGridPdf) layoutFile = R.layout.pdf_rv_item_grid
+        else layoutFile = R.layout.pdf_rv_item
+        val view = LayoutInflater.from(parent.context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
     }
 

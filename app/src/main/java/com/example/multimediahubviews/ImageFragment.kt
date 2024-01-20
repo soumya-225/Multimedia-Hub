@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +27,7 @@ import java.util.Locale
 
 var isGridImage: Boolean = false
 
-
-class ImageFragment : Fragment() {
+class ImageFragment() : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var list: ArrayList<ImageModel>
     private lateinit var imageAdapter: ImageAdapter
@@ -35,7 +35,19 @@ class ImageFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private lateinit var imageList: ArrayList<ImageModel>
-    private var spanCount: Int = 1
+    private var spanCount = 1
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun setupView() {
+        spanCount = if (isGridImage) {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else 1
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+        imageAdapter = ImageAdapter(list, requireContext())
+        recyclerView.adapter = imageAdapter
+        imageAdapter.filterList(getAllImages(requireContext()))
+    }
 
     @SuppressLint("MissingInflatedId")
     @RequiresApi(Build.VERSION_CODES.O)
@@ -73,14 +85,8 @@ class ImageFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
             isGridImage = !isGridImage
-            spanCount = if (isGridImage) {
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
-                else 3
-            } else 1
-            recyclerView.layoutManager = GridLayoutManager(context, spanCount)
-            imageAdapter = ImageAdapter(list, requireContext())
-            recyclerView.adapter = imageAdapter
-            imageAdapter.filterList(getAllImages(requireContext()))
+            setupView()
+            Log.d("MyAppTag", "onClick : $spanCount")
             true
         }
 
@@ -128,6 +134,7 @@ class ImageFragment : Fragment() {
         binding.recyclerView.adapter = imageAdapter
 
         getAllImages2()
+        setupView()
         return view
     }
 
@@ -246,5 +253,11 @@ class ImageFragment : Fragment() {
             }
         }
         imageAdapter.filterList(list1)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setupView()
     }
 }

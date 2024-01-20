@@ -2,7 +2,6 @@ package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
 import android.content.ComponentName
-import android.content.ContentUris
 import android.content.Intent
 import android.content.ServiceConnection
 import android.database.Cursor
@@ -13,9 +12,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
-import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.SeekBar
@@ -23,11 +20,9 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import androidx.core.os.postDelayed
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.ActivityAudioPlayerBinding
-import java.util.concurrent.TimeUnit
 
 class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
 
@@ -43,6 +38,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
 
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +55,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             Glide.with(this)
                 .asBitmap()
                 .load(getImgArt(musicListPA[songPosition].path))
-                .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
                 .into(binding.songImgPA)
             binding.songNamePA.text = musicListPA[songPosition].title
         }
@@ -152,7 +148,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         Glide.with(this)
             .asBitmap()
             .load(musicListPA[songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
             .into(binding.songImgPA)
 
         binding.songNamePA.text = musicListPA[songPosition].title
@@ -308,9 +304,9 @@ fun getImgArt(path: String): ByteArray? {
     return retriever.embeddedPicture
 }
 
-fun setSongPosition(increament: Boolean){
+fun setSongPosition(increment: Boolean){
     if (!AudioPlayer.repeat){
-        if (increament)
+        if (increment)
         {
             if (AudioPlayer.musicListPA.size -1 == AudioPlayer.songPosition)
                 AudioPlayer.songPosition = 0
