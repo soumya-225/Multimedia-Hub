@@ -3,7 +3,6 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -12,50 +11,47 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.multimediahubviews.databinding.FragmentAudioBinding
-import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
-import java.io.Serializable
 import java.util.Locale
 
 
 var isGridAudio: Boolean = false
+
 class AudioFragment : Fragment() {
-
-
     companion object{
         var musicListMA: ArrayList<AudioModel> = ArrayList()
     }
+
     private var audioList: ArrayList<AudioModel> = ArrayList()
     private lateinit var searchView: SearchView
     private lateinit var audioAdapter: AudioAdapter
     private lateinit var sortOrder: String
     private lateinit var recyclerView: RecyclerView
     private var spanCount: Int = 1
+
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_audio, container, false)
-        recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
+        val binding = FragmentAudioBinding.bind(view)
         setHasOptionsMenu(true)
 
-        val binding = FragmentAudioBinding.bind(view)
-        //recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         searchView = view.findViewById(R.id.search_view)
-        val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
-       // recyclerView.adapter = AudioAdapter(audioList, requireContext())
 
+        val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
         sortButton.setOnMenuItemClickListener {
             val menuItemView: View = view.findViewById(R.id.sort_switch)
             val popupMenu = PopupMenu(context, menuItemView)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.name -> sortOrder = MediaStore.Video.Media.DISPLAY_NAME
@@ -71,7 +67,6 @@ class AudioFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             darkModeState = !darkModeState
-            //Toast.makeText(requireContext(), "Dark Mode", Toast.LENGTH_SHORT).show()
             if (darkModeState) lightMode()
             else darkMode()
             true
@@ -83,13 +78,9 @@ class AudioFragment : Fragment() {
             true
         }
 
-
-        //audioAdapter = AudioAdapter(audioList, requireContext())
-        //recyclerView.adapter = audioAdapter
         setUpSearch()
         musicListMA = getAllAudios()
         audioAdapter = AudioAdapter(musicListMA,requireContext())
-
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -116,10 +107,8 @@ class AudioFragment : Fragment() {
     }
 
     private fun getAllAudios(): ArrayList<AudioModel>{
-
         val tempList = ArrayList<AudioModel>()
 
-        // To get all Audio files from device
         val contentResolver = requireContext().contentResolver
         val audioUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
@@ -138,7 +127,6 @@ class AudioFragment : Fragment() {
             if(cursor.moveToFirst())
                 do {
                     val titleC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-                    val idC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
                     val sizeC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
                     val pathC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
                     val lastModifiedC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
@@ -149,30 +137,12 @@ class AudioFragment : Fragment() {
 
                     try {
                         val file = File(pathC)
-                        //val artUriC = Uri.fromFile(file)
-                        /*val video = VideoModel(title = titleC, id = idC, folderName = folderC, duration = durationC, size = sizeC,
-                            path = pathC, artUri = artUriC, lastModified = lastModifiedC)*/
                         val audio = AudioModel(pathC, titleC, durationC, sizeC, lastModifiedC, artUriC)
                         if(file.exists()) tempList.add(audio)
                     }catch (_:Exception){}
                 }while (cursor.moveToNext())
         cursor?.close()
         return tempList
-        /*contentResolver.query(audioUri, projection, null, null, sortOrder).use { cursor ->
-            if (cursor == null) return@use
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID))
-                val title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
-                val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
-                val size = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
-                val lastModified = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
-                val duration = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
-
-                val audioModel = AudioModel(path, title, duration, size, lastModified)
-                audioList.add(audioModel)
-            }
-        }
-        return tempList*/
     }
 
     private fun setUpSearch() {
@@ -180,7 +150,6 @@ class AudioFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     filter(newText)
@@ -202,7 +171,4 @@ class AudioFragment : Fragment() {
         }
         audioAdapter.filterList(list1)
     }
-
-
 }
-

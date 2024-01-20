@@ -31,7 +31,7 @@
             android:layout_height="50dp"
             android:src="@drawable/baseline_arrow_back_ios_new_24"
             android:backgroundTint="@android:color/transparent"
-            android:contentDescription="Back Button"
+            android:contentDescription="@string/back_button"
             app:tint="@color/white" />
 
         <TextView
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Video Name"
+            android:text=""
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="16sp"
@@ -54,7 +54,7 @@
             android:layout_height="50dp"
             android:src="@drawable/launcher_icon"
             android:backgroundTint="@android:color/transparent"
-            android:contentDescription="Back Button"
+            android:contentDescription="@string/null_button"
             app:tint="@color/white"
             android:layout_marginEnd="50dp"
             android:padding="10dp"
@@ -67,7 +67,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:backgroundTint="@android:color/transparent"
-        android:contentDescription="Lock"
+        android:contentDescription="@string/lock_button"
         android:src="@drawable/baseline_lock_open_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -80,7 +80,7 @@
         android:layout_height="80dp"
         android:background="?android:selectableItemBackground"
         android:clickable="true"
-        android:contentDescription="Play Button"
+        android:contentDescription="@string/play_pause_button"
         android:focusable="true"
         android:src="@drawable/baseline_play_arrow_24"
         app:tint="@color/white"
@@ -106,7 +106,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/baseline_screen_rotation_24"
-            android:contentDescription="Orientation"
+            android:contentDescription="@string/orientation_button"
             app:tint="@color/white" />
 
         <ImageButton
@@ -115,7 +115,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/exo_controls_repeat_off"
-            android:contentDescription="Repeat Button"
+            android:contentDescription="@string/repeat_button"
             app:tint="@color/white" />
 
         <ImageButton
@@ -124,7 +124,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/baseline_skip_previous_24"
-            android:contentDescription="Previous Button"
+            android:contentDescription="@string/previous_button"
             app:tint="@color/white" />
         <ImageButton
             android:id="@+id/nextBtn"
@@ -132,7 +132,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/baseline_skip_next_24"
-            android:contentDescription="Next Button"
+            android:contentDescription="@string/next_button"
             app:tint="@color/white" />
         <ImageButton
             android:id="@+id/fullScreenBtn"
@@ -140,7 +140,7 @@
             android:layout_height="match_parent"
             android:background="?attr/selectableItemBackground"
             android:src="@drawable/baseline_fullscreen_24"
-            android:contentDescription="Fullscreen Button"
+            android:contentDescription="@string/fullscreen_button"
             app:tint="@color/white" />
     </LinearLayout>
 

@@ -52,7 +52,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:name="com.example.multimediahubviews.NowPlaying"
+            android:name="com.example.multimediahubviews.AudioNowPlaying"
             tools:layout="@layout/fragment_now_playing"
             tools:ignore="NotSibling"
             android:background="@color/white"/>

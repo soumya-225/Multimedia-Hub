@@ -19,7 +19,6 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
     RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
 
         private var layoutFile = R.layout.audio_rv_item
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView
         var size: TextView
@@ -45,25 +44,18 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
         holder.titleTextView.text = songData.title
         holder.size.text = parseFileLength(songData.size.toLong())
         holder.lastModified.text = convertEpochToDate(songData.lastModified.toLong()*1000)
+
         if (MyMediaPlayer.currentIndex == position) {
             holder.titleTextView.setTextColor(Color.parseColor("#FF0000"))
         } else {
             holder.titleTextView.setTextColor(Color.parseColor("#000000"))
         }
+
         Glide.with(context)
             .asBitmap()
             .load(songsList[position].artUri)
             .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
             .into(holder.image)
-
-        /*holder.itemView.setOnClickListener {
-            MyMediaPlayer.getInstance()!!.reset()
-            MyMediaPlayer.currentIndex = position
-            val intent = Intent(context, AudioPlayerActivity::class.java)
-            intent.putExtra("LIST", songsList)
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
-        }*/
 
         holder.itemView.setOnClickListener{
             val intent = Intent(context,AudioPlayer::class.java)

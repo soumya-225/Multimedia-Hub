@@ -31,21 +31,19 @@
                 android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
                 android:searchIcon="@drawable/baseline_search_24" />
+
         </com.google.android.material.appbar.MaterialToolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
-
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        tools:listitem="@layout/pdf_rv_item_old"
+        tools:listitem="@layout/pdf_rv_item_list"
         android:scrollbars="vertical"
         android:scrollbarThumbVertical="@drawable/scroll_icon"/>
-
-
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -61,4 +59,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </LinearLayout>

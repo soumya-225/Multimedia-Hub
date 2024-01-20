@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -25,10 +27,6 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import java.io.File
 
 class VideoPlayerActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityPlayerBinding
-    private lateinit var runnable: Runnable
-
     companion object {
         lateinit var player: SimpleExoPlayer
         lateinit var playerList: ArrayList<VideoModel>
@@ -38,7 +36,10 @@ class VideoPlayerActivity : AppCompatActivity() {
         private var isLocked = false
     }
 
-    @SuppressLint("InlinedApi", "WrongConstant", "Recycle")
+    private lateinit var binding: ActivityPlayerBinding
+    private lateinit var runnable: Runnable
+
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
@@ -101,26 +102,12 @@ class VideoPlayerActivity : AppCompatActivity() {
         playerList = ArrayList()
         playerList.addAll(VideoFragment.videoList)
         createPlayer()
-        /*when (intent.getStringExtra("class")) {
-            "All Videos" -> {
-                playerList = ArrayList()
-                playerList.addAll(VideoFragment.videoList)
-                createPlayer()
-            }
-            "SearchedVideos" -> {
-                playerList = ArrayList()
-                playerList.addAll(VideoFragment.searchList)
-                createPlayer()
-            }
-        }*/
 
         if (repeat) binding.repeatBtn.setImageResource(com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all)
         else binding.repeatBtn.setImageResource(com.google.android.exoplayer2.R.drawable.exo_controls_repeat_off)
     }
 
-    @SuppressLint("SourceLockedOrientationActivity")
     private fun initializeBinding() {
-
         binding.backBtn.setOnClickListener {
             finish()
         }
@@ -172,20 +159,17 @@ class VideoPlayerActivity : AppCompatActivity() {
         findViewById<ImageButton>(R.id.orientationBtn).setOnClickListener {
             requestedOrientation = if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT)
                 ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            else
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-
+            else ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
         }
     }
 
     private fun createPlayer() {
         try {
             player.release()
-        } catch (e: Exception) {
+        } catch (_: Exception) {
         }
         player = SimpleExoPlayer.Builder(this).build()
         binding.playerView.player = player
-
         binding.videoTitle.text = playerList[position].title
         binding.videoTitle.isSelected = true
 

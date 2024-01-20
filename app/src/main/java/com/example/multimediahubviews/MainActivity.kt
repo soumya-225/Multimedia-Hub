@@ -1,7 +1,6 @@
 package com.example.multimediahubviews
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -9,29 +8,27 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.multimediahubviews.databinding.ActivityMainBinding
-import com.example.multimediahubviews.databinding.FragmentImageBinding
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
+
 var darkModeState: Boolean = true
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
     val context = this
 
-    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -75,19 +72,17 @@ class MainActivity : AppCompatActivity() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) binding.bottomNavigationView.visibility =
             View.GONE
         else binding.bottomNavigationView.visibility = View.VISIBLE
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!AudioPlayer.isPlaying && AudioPlayer.musicService != null) {
-            AudioPlayer.musicService!!.stopForeground(true)
-            AudioPlayer.musicService!!.mediaPlayer!!.release()
-            AudioPlayer.musicService = null
+        if (!AudioPlayer.isPlaying && AudioPlayer.audioService != null) {
+            AudioPlayer.audioService!!.stopForeground(true)
+            AudioPlayer.audioService!!.mediaPlayer!!.release()
+            AudioPlayer.audioService = null
             exitProcess(1)
         }
     }
-
 
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
@@ -123,7 +118,6 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 }
-
 
 fun parseFileLength(length: Long): String {
     val units = listOf("B", "KB", "MB", "GB")
@@ -163,18 +157,4 @@ fun darkMode() {
 
 fun lightMode() {
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-}
-
-fun darkModeButton(binding: FragmentImageBinding) {
-    darkModeState = !darkModeState
-    if (darkModeState) {
-        lightMode()
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch)
-            .setIcon(R.drawable.baseline_dark_mode_24)
-    } else {
-        darkMode()
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch)
-            .setIcon(R.drawable.baseline_light_mode_24)
-    }
-
 }

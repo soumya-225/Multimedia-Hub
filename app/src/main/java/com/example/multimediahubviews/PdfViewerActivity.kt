@@ -17,7 +17,7 @@ class PdfViewerActivity : AppCompatActivity() {
     private lateinit var back: ImageView
     lateinit var name: String
     lateinit var path: String
-    private var ishide = false
+    private var isHide = false
     private lateinit var toolbar: Toolbar
     private lateinit var fileName: TextView
     private lateinit var scroll: ImageView
@@ -41,14 +41,14 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun fullscreen() {
         pdfView.setOnClickListener {
-            if (ishide) {
+            if (isHide) {
                 findViewById<View>(R.id.toolbar).visibility =
                     View.VISIBLE
-                ishide = false
+                isHide = false
             } else {
                 findViewById<View>(R.id.toolbar).visibility =
                     View.GONE
-                ishide = true
+                isHide = true
             }
         }
     }

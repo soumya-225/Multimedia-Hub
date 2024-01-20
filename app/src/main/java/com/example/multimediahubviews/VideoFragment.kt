@@ -3,84 +3,33 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.multimediahubviews.databinding.FragmentVideoBinding
 import java.io.File
 import java.util.Locale
 
+
 var isGridVideo: Boolean = false
-
-
 class VideoFragment : Fragment() {
-
-    private lateinit var videoAdapter: VideoAdapter
-    private lateinit var searchView: SearchView
-    private lateinit var sortOrder: String
-    private var spanCount: Int = 1
-    private lateinit var binding: FragmentVideoBinding
-    //var darkModeState: Boolean = true
-
     companion object{
         lateinit var videoList: ArrayList<VideoModel>
         var search: Boolean = false
     }
 
-    private fun setUpView(binding: FragmentVideoBinding) {
-        spanCount = if (isGridVideo) {
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
-            else 3
-        } else 1
-        binding.VideoRV.setHasFixedSize(true)
-        binding.VideoRV.setItemViewCacheSize(10)
-        binding.VideoRV.layoutManager = GridLayoutManager(context,spanCount)
-        videoAdapter = VideoAdapter(requireContext(), videoList)
-        binding.VideoRV.adapter = videoAdapter
-        videoAdapter.filterList(getAllVideos())
-    }
-
-    /*override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.top_app_bar, menu)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }*/
-
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId){
-            R.id.sort_switch -> {
-                Toast.makeText(requireContext(),"SORT",Toast.LENGTH_SHORT).show()
-                return true
-            }
-            R.id.view_switch -> {
-                Toast.makeText(requireContext(),"VIEW",Toast.LENGTH_SHORT).show()
-                return true
-            }
-            R.id.search_view -> {
-                setUpSearch()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
-        //return true
-        //return super.onOptionsItemSelected(item)
-    }*/
-
-    /*override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        //supportActionBar.setDisplayShowTitleEnabled(false)
-        setHasOptionsMenu(true)
-    }*/
+    private lateinit var videoAdapter: VideoAdapter
+    private lateinit var searchView: SearchView
+    private lateinit var sortOrder: String
+    private var spanCount: Int = 1
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -90,20 +39,11 @@ class VideoFragment : Fragment() {
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_video, container, false)
-        binding = FragmentVideoBinding.bind(view)
+        val binding = FragmentVideoBinding.bind(view)
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
 
         sortButton.setOnMenuItemClickListener {
-            /*sortState = !sortState
-            //Log.d("Tag",sortState.toString())
-            //Toast.makeText(requireContext(), "Sort", Toast.LENGTH_SHORT).show()
-            sortOrder = if (sortState) MediaStore.Video.Media.DISPLAY_NAME
-            else MediaStore.Video.Media.DATE_MODIFIED + " DESC"
-            videoAdapter.filterList(getAllVideos())*/
-            //FragmentDialogBox().show(requireActivity().supportFragmentManager,"fragment Dialog")
-            // Initializing the popup menu and giving the reference as current context
             val menuItemView: View = view.findViewById(R.id.sort_switch)
-            //val popupMenu = PopupMenu(context, MenuItemCompat.getActionView(sortButton) )
             val popupMenu = PopupMenu(context, menuItemView)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
             popupMenu.setOnMenuItemClickListener {
@@ -114,7 +54,6 @@ class VideoFragment : Fragment() {
                     R.id.size -> sortOrder = MediaStore.Video.Media.SIZE + " DESC"
                 }
                 videoAdapter.filterList(getAllVideos())
-                //Toast.makeText(context, "You Clicked " + menuItem.title, Toast.LENGTH_SHORT).show()
                 true
             }
             popupMenu.show()
@@ -138,7 +77,6 @@ class VideoFragment : Fragment() {
         setUpSearch()
         videoList = getAllVideos()
         videoAdapter = VideoAdapter(requireContext(), videoList)
-
         binding.VideoRV.setHasFixedSize(true)
         binding.VideoRV.setItemViewCacheSize(10)
         binding.VideoRV.layoutManager = LinearLayoutManager(requireContext())
@@ -149,8 +87,8 @@ class VideoFragment : Fragment() {
     }
 
     private fun getAllVideos(): ArrayList<VideoModel>{
-
         val tempList = ArrayList<VideoModel>()
+
         val projection = arrayOf(
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.SIZE,
@@ -197,7 +135,6 @@ class VideoFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     filter(newText)
@@ -220,9 +157,16 @@ class VideoFragment : Fragment() {
         videoAdapter.filterList(list1)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        setUpView(binding)
+    private fun setUpView(binding: FragmentVideoBinding) {
+        spanCount = if (isGridVideo) {
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else 1
+        binding.VideoRV.setHasFixedSize(true)
+        binding.VideoRV.setItemViewCacheSize(10)
+        binding.VideoRV.layoutManager = GridLayoutManager(context,spanCount)
+        videoAdapter = VideoAdapter(requireContext(), videoList)
+        binding.VideoRV.adapter = videoAdapter
+        videoAdapter.filterList(getAllVideos())
     }
 }

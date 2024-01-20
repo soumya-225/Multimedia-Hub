@@ -26,7 +26,7 @@
                 android:layout_margin="5dp"
                 android:src="@drawable/music"
                 android:layout_gravity="center"
-                android:contentDescription="Audio Icon" />
+                android:contentDescription="@string/audio_icon" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:text="File Name"
+                    android:text=""
                     android:textSize="16sp"
                     app:layout_constraintBottom_toTopOf="@+id/last_modified"
                     app:layout_constraintTop_toTopOf="parent"
@@ -48,7 +48,7 @@
                     android:id="@+id/file_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="100.54 KB"
+                    android:text=""
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:ignore="MissingConstraints" />
@@ -57,7 +57,7 @@
                     android:id="@+id/last_modified"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="01/01/1970"
+                    android:text=""
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
@@ -72,7 +72,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
-
 
     </androidx.cardview.widget.CardView>
 

@@ -3,7 +3,6 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.VideoRvItemBinding
-import kotlin.properties.Delegates
 
 class VideoAdapter(private val context: Context, private var videoList: ArrayList<VideoModel>):
     RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
 
         private lateinit var thumbnail: ImageView
-
 
     class ViewHolder(binding: VideoRvItemBinding): RecyclerView.ViewHolder(binding.root) {
         val title = binding.videoFileName

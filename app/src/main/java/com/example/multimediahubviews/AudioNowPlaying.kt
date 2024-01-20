@@ -12,12 +12,10 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.example.multimediahubviews.databinding.ActivityAudioPlayerBinding
 import com.example.multimediahubviews.databinding.FragmentNowPlayingBinding
 
 
-class NowPlaying : Fragment() {
-
+class AudioNowPlaying : Fragment() {
     companion object{
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: FragmentNowPlayingBinding
@@ -37,7 +35,7 @@ class NowPlaying : Fragment() {
         }
         binding.nextBtnNP.setOnClickListener {
             setSongPosition(true)
-            AudioPlayer.musicService!!.createMediaPlayer()
+            AudioPlayer.audioService!!.createMediaPlayer()
 
             Glide.with(this)
                 .asBitmap()
@@ -46,7 +44,7 @@ class NowPlaying : Fragment() {
                 .into(binding.songImgNP)
 
             binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
-            AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 1F)
+            AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
             playMusic()
 
         }
@@ -54,16 +52,15 @@ class NowPlaying : Fragment() {
         binding.root.setOnClickListener{
             val intent = Intent(requireContext(),AudioPlayer::class.java)
             intent.putExtra("index",AudioPlayer.songPosition)
-            intent.putExtra("class","NowPlaying")
+            intent.putExtra("class","AudioNowPlaying")
             ContextCompat.startActivity(requireContext(), intent,null)
         }
-        // Inflate the layout for this fragment
         return view
     }
 
     override fun onResume() {
         super.onResume()
-        if (AudioPlayer.musicService != null){
+        if (AudioPlayer.audioService != null){
             binding.root.visibility = View.VISIBLE
             binding.songNameNP.isSelected = true
 
@@ -74,22 +71,23 @@ class NowPlaying : Fragment() {
                 .into(binding.songImgNP)
 
             binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+
             if (AudioPlayer.isPlaying) binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
             else binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
         }
     }
 
     private fun playMusic(){
-        AudioPlayer.musicService!!.mediaPlayer!!.start()
+        AudioPlayer.audioService!!.mediaPlayer!!.start()
         binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
-        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 1F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.baseline_pause_24)
         AudioPlayer.isPlaying = true
     }
     private fun pauseMusic() {
-        AudioPlayer.musicService!!.mediaPlayer!!.pause()
+        AudioPlayer.audioService!!.mediaPlayer!!.pause()
         binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
-        AudioPlayer.musicService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
         AudioPlayer.isPlaying = true
     }

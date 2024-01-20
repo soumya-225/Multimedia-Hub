@@ -1,6 +1,5 @@
 package com.example.multimediahubviews
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
@@ -20,7 +19,6 @@ class ImageViewerActivity : AppCompatActivity() {
     private lateinit var fileName: TextView
     private lateinit var title: String
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_image_full_screen)

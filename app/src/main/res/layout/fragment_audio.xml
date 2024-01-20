@@ -31,9 +31,10 @@
                 android:queryBackground="@android:color/transparent"
                 android:iconifiedByDefault="false"
                 android:searchIcon="@drawable/baseline_search_24" />
-        </com.google.android.material.appbar.MaterialToolbar>
-    </com.google.android.material.appbar.AppBarLayout>
 
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"

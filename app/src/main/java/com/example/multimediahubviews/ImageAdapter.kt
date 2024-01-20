@@ -16,7 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var context: Context) :
     RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
-        private var layoutFile: Int = R.layout.image_rv_item
+        private var layoutFile: Int = R.layout.image_rv_item_list
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView
@@ -32,8 +32,8 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        layoutFile = if (isGridImage) R.layout.image_rv_item_old
-        else R.layout.image_rv_item
+        layoutFile = if (isGridImage) R.layout.image_rv_item_grid
+        else R.layout.image_rv_item_list
         val view: View = LayoutInflater.from(parent.context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
     }

@@ -3,23 +3,16 @@ package com.example.multimediahubviews
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.content.pm.ServiceInfo
 import android.graphics.BitmapFactory
-import android.media.MediaMetadata
 import android.media.MediaPlayer
 import android.os.Binder
-import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
 
-class MusicService : Service() {
+class AudioService : Service() {
     private var myBinder = MyBinder()
     var mediaPlayer: MediaPlayer? = null
     private lateinit var mediaSession: MediaSessionCompat
@@ -31,22 +24,21 @@ class MusicService : Service() {
     }
 
     inner class MyBinder : Binder() {
-        fun currentService(): MusicService {
-            return this@MusicService
+        fun currentService(): AudioService {
+            return this@AudioService
         }
     }
 
-
     fun showNotification(playPauseBtn: Int, playbackSpeed: Float) {
-
         val intent = Intent(baseContext, AudioPlayer::class.java)
         intent.putExtra("index", AudioPlayer.songPosition)
-        intent.putExtra("class","NowPlaying")
+        intent.putExtra("class","AudioNowPlaying")
+
         val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val prevIntent = Intent(
             baseContext,
-            NotificationReceiver::class.java
+            AudioNotificationReceiver::class.java
         ).setAction(ApplicationClass.PREVIOUS)
         val prevPendingIntent = PendingIntent.getBroadcast(
             baseContext,
@@ -56,7 +48,7 @@ class MusicService : Service() {
         )
 
         val playIntent =
-            Intent(baseContext, NotificationReceiver::class.java).setAction(ApplicationClass.PLAY)
+            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.PLAY)
         val playPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -65,7 +57,7 @@ class MusicService : Service() {
         )
 
         val nextIntent =
-            Intent(baseContext, NotificationReceiver::class.java).setAction(ApplicationClass.NEXT)
+            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.NEXT)
         val nextPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -74,7 +66,7 @@ class MusicService : Service() {
         )
 
         val exitIntent =
-            Intent(baseContext, NotificationReceiver::class.java).setAction(ApplicationClass.EXIT)
+            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.EXIT)
         val exitPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -121,30 +113,25 @@ class MusicService : Service() {
         }*/
 
 
-        /*val intent = Intent(this, MusicService::class.java)
+        /*val intent = Intent(this, AudioService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
         }*/
 
-
-        //startForegroundService(Intent(baseContext,MusicService::class.java))
-
         startForeground(2, notification)
-
-
     }
 
     fun createMediaPlayer() {
         try {
-            if (AudioPlayer.musicService!!.mediaPlayer == null) AudioPlayer.musicService!!.mediaPlayer =
+            if (AudioPlayer.audioService!!.mediaPlayer == null) AudioPlayer.audioService!!.mediaPlayer =
                 MediaPlayer()
-            AudioPlayer.musicService!!.mediaPlayer?.reset()
-            AudioPlayer.musicService!!.mediaPlayer?.setDataSource(AudioPlayer.musicListPA[AudioPlayer.songPosition].path)
-            AudioPlayer.musicService!!.mediaPlayer?.prepare()
+            AudioPlayer.audioService!!.mediaPlayer?.reset()
+            AudioPlayer.audioService!!.mediaPlayer?.setDataSource(AudioPlayer.musicListPA[AudioPlayer.songPosition].path)
+            AudioPlayer.audioService!!.mediaPlayer?.prepare()
             AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-            AudioPlayer.musicService!!.showNotification(R.drawable.baseline_pause_24, 0F)
+            AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 0F)
 
             AudioPlayer.binding.tvSeekBarStart.text = convertToMMSS(mediaPlayer!!.currentPosition.toString())
             AudioPlayer.binding.tvSeekBarEnd.text = convertToMMSS(mediaPlayer!!.duration.toString())

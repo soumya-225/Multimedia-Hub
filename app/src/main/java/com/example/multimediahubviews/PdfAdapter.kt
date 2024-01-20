@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import java.io.File
 
@@ -15,7 +14,7 @@ import java.io.File
 class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
 
-        private var layoutFile = R.layout.pdf_rv_item
+        private var layoutFile = R.layout.pdf_rv_item_list
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var name: TextView
@@ -29,14 +28,10 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        if (isGridPdf) layoutFile = R.layout.pdf_rv_item_grid
-        else layoutFile = R.layout.pdf_rv_item
+        layoutFile = if (isGridPdf) R.layout.pdf_rv_item_grid
+        else R.layout.pdf_rv_item_list
         val view = LayoutInflater.from(parent.context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -51,6 +46,10 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
             intent.putExtra("path", file.path)
             activity.startActivity(intent)
         }
+    }
+
+    override fun getItemCount(): Int {
+        return list.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
