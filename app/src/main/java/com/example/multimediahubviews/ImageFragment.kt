@@ -1,6 +1,10 @@
 package com.example.multimediahubviews
 
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
@@ -17,6 +21,7 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,12 +40,21 @@ class ImageFragment : Fragment() {
     private lateinit var sortOrder: String
     private lateinit var imageList: ArrayList<ImageModel>
     private var spanCount = 1
+    private lateinit var binding: FragmentImageBinding
+
 
     private fun setupView() {
         spanCount = if (isGridImage) {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else 1
+        } else {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            1
+
+        }
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         imageAdapter = ImageAdapter(list, requireContext())
         recyclerView.adapter = imageAdapter
@@ -48,14 +62,13 @@ class ImageFragment : Fragment() {
     }
 
     @SuppressLint("MissingInflatedId")
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_image, container, false)
         val context = activity?.applicationContext
-        val binding = FragmentImageBinding.bind(view)
+        binding = FragmentImageBinding.bind(view)
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
 
 
@@ -64,18 +77,31 @@ class ImageFragment : Fragment() {
         searchView = view.findViewById(R.id.search_view)
         list = ArrayList()
 
+        if (darkModeState) {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            //lightMode()
+        }
+        else{
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            //darkMode()
+        }
+
         //val layoutManager =
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
             darkModeState = !darkModeState
             if (darkModeState) {
-                binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+                //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
                 lightMode()
             }
             else{
-                binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-                binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+                //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+                //binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
                 darkMode()
             }
             true
@@ -119,6 +145,7 @@ class ImageFragment : Fragment() {
             true
         }*/
         setUpSearch()
+
         imageList = getAllImages2()
         imageAdapter = ImageAdapter(imageList,requireContext())
 

@@ -30,6 +30,7 @@ class PdfFragment : Fragment() {
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private var spanCount: Int = 1
+    private lateinit var binding: FragmentPdfBinding
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -37,13 +38,24 @@ class PdfFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(layout.fragment_pdf, container, false)
-        val binding = FragmentPdfBinding.bind(view)
+        binding = FragmentPdfBinding.bind(view)
 
         recyclerView = view.findViewById(R.id.recycler_view)
         searchView = view.findViewById(R.id.search_view)
 
         pdfList = arrayListOf()
         sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
+
+        if (darkModeState) {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+        }
+        else{
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+        }
 
 
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
@@ -92,9 +104,15 @@ class PdfFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridPdf) {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else 1
+        } else {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            1
+        }
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         pdfAdapter = PdfAdapter(pdfList, requireActivity())
         recyclerView.adapter = pdfAdapter

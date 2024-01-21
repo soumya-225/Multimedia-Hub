@@ -46,6 +46,19 @@ class VideoFragment : Fragment() {
         binding = FragmentVideoBinding.bind(view)
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
 
+        if (darkModeState) {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            //lightMode()
+        }
+        else{
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            //darkMode()
+        }
+
         sortButton.setOnMenuItemClickListener {
             val menuItemView: View = view.findViewById(R.id.sort_switch)
             val popupMenu = PopupMenu(context, menuItemView)
@@ -185,9 +198,15 @@ class VideoFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridVideo) {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else 1
+        } else{
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            1
+        }
         binding.VideoRV.setHasFixedSize(true)
         binding.VideoRV.setItemViewCacheSize(10)
         binding.VideoRV.layoutManager = GridLayoutManager(context, spanCount)

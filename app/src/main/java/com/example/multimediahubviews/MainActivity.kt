@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import android.util.Log
+import android.view.GestureDetector
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -29,6 +30,7 @@ private var isLaunched = true
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var gestureDetector: GestureDetector
     val context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

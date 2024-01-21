@@ -33,18 +33,30 @@ class AudioFragment : Fragment() {
     private lateinit var sortOrder: String
     private lateinit var recyclerView: RecyclerView
     private var spanCount: Int = 1
+    private lateinit var binding: FragmentAudioBinding
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_audio, container, false)
-        val binding = FragmentAudioBinding.bind(view)
+        binding = FragmentAudioBinding.bind(view)
         setHasOptionsMenu(true)
 
         recyclerView = view.findViewById(R.id.recyclerView)
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         searchView = view.findViewById(R.id.search_view)
+
+        if (darkModeState) {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+        }
+        else{
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+        }
 
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
         sortButton.setOnMenuItemClickListener {
@@ -97,9 +109,15 @@ class AudioFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridAudio) {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else 1
+        } else{
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            1
+        }
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         audioAdapter = AudioAdapter(audioList, requireContext())
         recyclerView.adapter = audioAdapter
