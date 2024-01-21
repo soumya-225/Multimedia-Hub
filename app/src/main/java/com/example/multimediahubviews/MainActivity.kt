@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -23,45 +24,25 @@ import kotlin.system.exitProcess
 
 
 var darkModeState: Boolean = true
+private var isLaunched = true
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     val context = this
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
                 binding = ActivityMainBinding.inflate(layoutInflater)
                 setSupportActionBar(binding.topAppBar)
                 setContentView(binding.root)
-                replaceFragment(ImageFragment())
+                if (isLaunched) {
+                    replaceFragment(ImageFragment())
+                    isLaunched = false
+                }
                 binding.bottomNavigationView.setOnItemSelectedListener {
-                    when (it.itemId) {
-                        R.id.image -> {
-                            replaceFragment(ImageFragment())
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        R.id.video -> {
-                            replaceFragment(VideoFragment())
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        R.id.music -> {
-                            replaceFragment(AudioFragment())
-                            binding.nowPlaying.visibility = View.VISIBLE
-                        }
-
-                        R.id.pdf -> {
-                            replaceFragment(PdfFragment())
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        else -> {}
-                    }
+                    setFragment(it.itemId)
                     true
                 }
             } else {
@@ -69,9 +50,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) binding.bottomNavigationView.visibility =
-            View.GONE
-        else binding.bottomNavigationView.visibility = View.VISIBLE
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            binding.bottomNavigationView.visibility = View.GONE
+        } else {
+            binding.bottomNavigationView.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroy() {
@@ -81,6 +64,36 @@ class MainActivity : AppCompatActivity() {
             AudioPlayer.audioService!!.mediaPlayer!!.release()
             AudioPlayer.audioService = null
             exitProcess(1)
+        }
+    }
+
+    private fun setFragment(itemId: Int) {
+        when (itemId) {
+            R.id.image -> {
+                Log.d("TagHere", "Image Frag")
+                replaceFragment(ImageFragment())
+                binding.nowPlaying.visibility = View.GONE
+            }
+
+            R.id.video -> {
+                Log.d("TagHere", "Video Frag")
+                replaceFragment(VideoFragment())
+                binding.nowPlaying.visibility = View.GONE
+            }
+
+            R.id.music -> {
+                Log.d("TagHere", "Music Frag")
+                replaceFragment(AudioFragment())
+                binding.nowPlaying.visibility = View.VISIBLE
+            }
+
+            R.id.pdf -> {
+                Log.d("TagHere", "PDF Frag")
+                replaceFragment(PdfFragment())
+                binding.nowPlaying.visibility = View.GONE
+            }
+
+            else -> {}
         }
     }
 
@@ -150,6 +163,7 @@ fun convertToMMSS(duration: String): String {
         TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)
     )
 }
+
 
 fun darkMode() {
     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)

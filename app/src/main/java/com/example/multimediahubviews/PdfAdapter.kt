@@ -14,12 +14,13 @@ import java.io.File
 class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     RecyclerView.Adapter<PdfAdapter.ViewHolder>() {
 
-        private var layoutFile = R.layout.pdf_rv_item_list
+    private var layoutFile = R.layout.pdf_rv_item_list
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var name: TextView
         var size: TextView
         var lastModified: TextView
+
         init {
             name = itemView.findViewById(R.id.pdf_file_name)
             size = itemView.findViewById(R.id.pdf_file_size)

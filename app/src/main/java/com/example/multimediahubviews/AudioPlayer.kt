@@ -9,13 +9,13 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.media.audiofx.AudioEffect
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.SeekBar
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
@@ -23,13 +23,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.ActivityAudioPlayerBinding
 
 class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnCompletionListener {
-    companion object{
+    companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: ActivityAudioPlayerBinding
         lateinit var musicListPA: ArrayList<AudioModel>
         var songPosition: Int = 0
         var isPlaying: Boolean = false
-        var audioService: AudioService ?= null
+        var audioService: AudioService? = null
         var repeat: Boolean = false
 
     }
@@ -40,7 +40,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (intent.data?.scheme.contentEquals("content")){
+        if (intent.data?.scheme.contentEquals("content")) {
             val intentService = Intent(this, AudioService::class.java)
             bindService(intentService, this, BIND_AUTO_CREATE)
             startService(intentService)
@@ -52,8 +52,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                 .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
                 .into(binding.songImgPA)
             binding.songNamePA.text = musicListPA[songPosition].title
-        }
-        else initializeLayout()
+        } else initializeLayout()
 
         binding.playPauseBtnPA.setOnClickListener {
             if (isPlaying) pauseMusic()
@@ -68,9 +67,9 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             prevNextSong(true)
         }
 
-        binding.seekBarPA.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+        binding.seekBarPA.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (fromUser){
+                if (fromUser) {
                     audioService!!.mediaPlayer!!.seekTo(progress)
                 }
             }
@@ -81,11 +80,10 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         })
 
         binding.repeatBtnPA.setOnClickListener {
-            if (!repeat){
+            if (!repeat) {
                 repeat = true
-                binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this,R.color.purple_500))
-            }
-            else{
+                binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.purple_500))
+            } else {
                 repeat = false
                 binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this, R.color.cool_pink))
             }
@@ -98,11 +96,14 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         binding.equalizerBtnPA.setOnClickListener {
             try {
                 val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
-                eqIntent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, audioService!!.mediaPlayer!!.audioSessionId)
+                eqIntent.putExtra(
+                    AudioEffect.EXTRA_AUDIO_SESSION,
+                    audioService!!.mediaPlayer!!.audioSessionId
+                )
                 eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, baseContext.packageName)
                 eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
-                startActivityForResult(eqIntent,101)
-            }catch (e: Exception){
+                startActivityForResult(eqIntent, 101)
+            } catch (e: Exception) {
                 Toast.makeText(this, "Equalizer Feature Not Supported!!", Toast.LENGTH_SHORT).show()
             }
         }
@@ -129,10 +130,15 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
 
         binding.songNamePA.text = musicListPA[songPosition].title
 
-        if (repeat) binding.repeatBtnPA.setColorFilter(ContextCompat.getColor(this,R.color.purple_500))
+        if (repeat) binding.repeatBtnPA.setColorFilter(
+            ContextCompat.getColor(
+                this,
+                R.color.purple_500
+            )
+        )
     }
 
-    private fun createMediaPlayer(){
+    private fun createMediaPlayer() {
         try {
             if (audioService!!.mediaPlayer == null) audioService!!.mediaPlayer = MediaPlayer()
             audioService!!.mediaPlayer?.reset()
@@ -143,40 +149,46 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
             audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
 
-            binding.tvSeekBarStart.text = convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
-            binding.tvSeekBarEnd.text = convertToMMSS(audioService!!.mediaPlayer!!.duration.toString())
+            binding.tvSeekBarStart.text =
+                convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
+            binding.tvSeekBarEnd.text =
+                convertToMMSS(audioService!!.mediaPlayer!!.duration.toString())
             binding.seekBarPA.progress = 0
             binding.seekBarPA.max = audioService!!.mediaPlayer!!.duration
             audioService!!.mediaPlayer!!.setOnCompletionListener(this)
 
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             return
         }
     }
 
 
-    private fun initializeLayout(){
-        songPosition = intent.getIntExtra("index",0)
-        when (intent.getStringExtra("class")){
+    private fun initializeLayout() {
+        songPosition = intent.getIntExtra("index", 0)
+        when (intent.getStringExtra("class")) {
             "AudioAdapter" -> {
-                val intent = Intent(this,AudioService::class.java)
-                bindService(intent,this, BIND_AUTO_CREATE)
+                val intent = Intent(this, AudioService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
                 startService(intent)
                 musicListPA = ArrayList()
                 musicListPA.addAll(AudioFragment.musicListMA)
                 setLayout()
             }
-            "AudioNowPlaying" ->{
+
+            "AudioNowPlaying" -> {
                 Log.d("Tag2", songPosition.toString())
                 setLayout()
-                binding.tvSeekBarStart.text = convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
-                binding.tvSeekBarEnd.text = convertToMMSS(audioService!!.mediaPlayer!!.duration.toString())
+                binding.tvSeekBarStart.text =
+                    convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
+                binding.tvSeekBarEnd.text =
+                    convertToMMSS(audioService!!.mediaPlayer!!.duration.toString())
                 binding.seekBarPA.progress = audioService!!.mediaPlayer!!.currentPosition
                 binding.seekBarPA.max = audioService!!.mediaPlayer!!.duration
             }
+
             "MainActivity" -> {
-                val intent = Intent(this,AudioService::class.java)
-                bindService(intent,this, BIND_AUTO_CREATE)
+                val intent = Intent(this, AudioService::class.java)
+                bindService(intent, this, BIND_AUTO_CREATE)
                 startService(intent)
                 musicListPA = ArrayList()
                 musicListPA.addAll(AudioFragment.musicListMA)
@@ -184,7 +196,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         }
     }
 
-    private fun getMusicDetails(contentUri: Uri): AudioModel{
+    private fun getMusicDetails(contentUri: Uri): AudioModel {
         var cursor: Cursor? = null
         try {
             val projection = arrayOf(MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DURATION)
@@ -195,8 +207,8 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             cursor!!.moveToFirst()
             val path = cursor.getString(dataColumn!!)
             val duration = cursor.getLong(durationColumn!!)
-            return AudioModel(path,path, duration.toString(), "","","Unknown".toUri() )
-        }finally {
+            return AudioModel(path, path, duration.toString(), "", "", "Unknown".toUri())
+        } finally {
             cursor?.close()
         }
     }
@@ -215,14 +227,13 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         audioService!!.mediaPlayer?.pause()
     }
 
-    private fun prevNextSong(increment: Boolean){
-        if (increment){
+    private fun prevNextSong(increment: Boolean) {
+        if (increment) {
             setSongPosition(true)
             ++songPosition
             setLayout()
             createMediaPlayer()
-        }
-        else{
+        } else {
             setSongPosition(false)
             --songPosition
             setLayout()
@@ -245,7 +256,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 101 || resultCode == RESULT_OK){
+        if (requestCode == 101 || resultCode == RESULT_OK) {
             return
         }
     }
@@ -255,7 +266,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         createMediaPlayer()
         try {
             setLayout()
-        }catch (e: Exception){
+        } catch (e: Exception) {
             return
         }
     }
@@ -267,17 +278,15 @@ fun getImgArt(path: String): ByteArray? {
     return retriever.embeddedPicture
 }
 
-fun setSongPosition(increment: Boolean){
-    if (!AudioPlayer.repeat){
-        if (increment)
-        {
-            if (AudioPlayer.musicListPA.size -1 == AudioPlayer.songPosition)
+fun setSongPosition(increment: Boolean) {
+    if (!AudioPlayer.repeat) {
+        if (increment) {
+            if (AudioPlayer.musicListPA.size - 1 == AudioPlayer.songPosition)
                 AudioPlayer.songPosition = 0
             else ++AudioPlayer.songPosition
-        }
-        else{
-            if (AudioPlayer.songPosition ==0)
-                AudioPlayer.songPosition = AudioPlayer.musicListPA.size -1
+        } else {
+            if (AudioPlayer.songPosition == 0)
+                AudioPlayer.songPosition = AudioPlayer.musicListPA.size - 1
             else --AudioPlayer.songPosition
 
         }

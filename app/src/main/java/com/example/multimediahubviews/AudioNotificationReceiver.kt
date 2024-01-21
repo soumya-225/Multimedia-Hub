@@ -7,9 +7,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlin.system.exitProcess
 
-class AudioNotificationReceiver: BroadcastReceiver() {
+class AudioNotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        when (intent?.action){
+        when (intent?.action) {
             ApplicationClass.PREVIOUS -> prevNextSong(false, context!!)
             ApplicationClass.PLAY -> if (AudioPlayer.isPlaying) pauseMusic() else playMusic()
             ApplicationClass.NEXT -> prevNextSong(true, context!!)
@@ -22,7 +22,7 @@ class AudioNotificationReceiver: BroadcastReceiver() {
         }
     }
 
-    private fun playMusic(){
+    private fun playMusic() {
         AudioPlayer.isPlaying = true
         AudioPlayer.audioService!!.mediaPlayer!!.start()
         AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
@@ -31,7 +31,7 @@ class AudioNotificationReceiver: BroadcastReceiver() {
 
     }
 
-    private fun pauseMusic(){
+    private fun pauseMusic() {
         AudioPlayer.isPlaying = false
         AudioPlayer.audioService!!.mediaPlayer!!.pause()
         AudioPlayer.audioService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
@@ -40,7 +40,7 @@ class AudioNotificationReceiver: BroadcastReceiver() {
 
     }
 
-    private fun prevNextSong(increment: Boolean, context: Context){
+    private fun prevNextSong(increment: Boolean, context: Context) {
         setSongPosition(increment)
         AudioPlayer.audioService!!.createMediaPlayer()
 
@@ -50,7 +50,8 @@ class AudioNotificationReceiver: BroadcastReceiver() {
             .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
             .into(AudioNowPlaying.binding.songImgNP)
 
-        AudioNowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioNowPlaying.binding.songNameNP.text =
+            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
         Glide.with(context)
             .asBitmap()
@@ -58,7 +59,8 @@ class AudioNotificationReceiver: BroadcastReceiver() {
             .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
             .into(AudioPlayer.binding.songImgPA)
 
-        AudioPlayer.binding.songNamePA.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioPlayer.binding.songNamePA.text =
+            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
         playMusic()
     }

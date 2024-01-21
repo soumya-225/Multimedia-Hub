@@ -32,7 +32,7 @@ class AudioService : Service() {
     fun showNotification(playPauseBtn: Int, playbackSpeed: Float) {
         val intent = Intent(baseContext, AudioPlayer::class.java)
         intent.putExtra("index", AudioPlayer.songPosition)
-        intent.putExtra("class","AudioNowPlaying")
+        intent.putExtra("class", "AudioNowPlaying")
 
         val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
@@ -48,7 +48,10 @@ class AudioService : Service() {
         )
 
         val playIntent =
-            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.PLAY)
+            Intent(
+                baseContext,
+                AudioNotificationReceiver::class.java
+            ).setAction(ApplicationClass.PLAY)
         val playPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -57,7 +60,10 @@ class AudioService : Service() {
         )
 
         val nextIntent =
-            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.NEXT)
+            Intent(
+                baseContext,
+                AudioNotificationReceiver::class.java
+            ).setAction(ApplicationClass.NEXT)
         val nextPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -66,7 +72,10 @@ class AudioService : Service() {
         )
 
         val exitIntent =
-            Intent(baseContext, AudioNotificationReceiver::class.java).setAction(ApplicationClass.EXIT)
+            Intent(
+                baseContext,
+                AudioNotificationReceiver::class.java
+            ).setAction(ApplicationClass.EXIT)
         val exitPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -133,7 +142,8 @@ class AudioService : Service() {
             AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
             AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 0F)
 
-            AudioPlayer.binding.tvSeekBarStart.text = convertToMMSS(mediaPlayer!!.currentPosition.toString())
+            AudioPlayer.binding.tvSeekBarStart.text =
+                convertToMMSS(mediaPlayer!!.currentPosition.toString())
             AudioPlayer.binding.tvSeekBarEnd.text = convertToMMSS(mediaPlayer!!.duration.toString())
             AudioPlayer.binding.seekBarPA.progress = 0
             AudioPlayer.binding.seekBarPA.max = mediaPlayer!!.duration
@@ -143,12 +153,13 @@ class AudioService : Service() {
         }
     }
 
-    fun seekBarSetup(){
+    fun seekBarSetup() {
         runnable = Runnable {
-            AudioPlayer.binding.tvSeekBarStart.text = convertToMMSS(mediaPlayer!!.currentPosition.toString())
+            AudioPlayer.binding.tvSeekBarStart.text =
+                convertToMMSS(mediaPlayer!!.currentPosition.toString())
             AudioPlayer.binding.seekBarPA.progress = mediaPlayer!!.currentPosition
-            Handler(Looper.getMainLooper()).postDelayed(runnable,200)
+            Handler(Looper.getMainLooper()).postDelayed(runnable, 200)
         }
-        Handler(Looper.getMainLooper()).postDelayed(runnable,0)
+        Handler(Looper.getMainLooper()).postDelayed(runnable, 0)
     }
 }

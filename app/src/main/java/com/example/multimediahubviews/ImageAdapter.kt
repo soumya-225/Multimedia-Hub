@@ -16,13 +16,14 @@ import com.bumptech.glide.request.RequestOptions
 class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var context: Context) :
     RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
-        private var layoutFile: Int = R.layout.image_rv_item_list
+    private var layoutFile: Int = R.layout.image_rv_item_list
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView
         var title: TextView
         var size: TextView
         var lastModified: TextView
+
         init {
             imageView = itemView.findViewById(R.id.imageView2)
             title = itemView.findViewById(R.id.image_file_name)
@@ -59,7 +60,7 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
             val fileName = imageList[position].title
             val intent = Intent(context, ImageViewerActivity::class.java)
                 .putExtra("parseData", parseData)
-                .putExtra("fileName",fileName)
+                .putExtra("fileName", fileName)
                 .addFlags(FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }

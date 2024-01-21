@@ -29,7 +29,7 @@ class PdfViewerActivity : AppCompatActivity() {
         initVar()
     }
 
-    private fun initVar(){
+    private fun initVar() {
         pdfView = findViewById(R.id.pdfView)
         toolbar = findViewById(R.id.toolbar)
         back = findViewById(R.id.back)
@@ -66,10 +66,10 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     private fun back() {
-        back.setOnClickListener {finish()}
+        back.setOnClickListener { finish() }
     }
 
-    private fun scrollType(){
+    private fun scrollType() {
         scroll.setOnClickListener {
             sType = !sType
             if (sType) scroll.setImageResource(R.drawable.baseline_swipe_vertical_24)
@@ -85,8 +85,7 @@ class PdfViewerActivity : AppCompatActivity() {
         if (nameExtra != null && pathExtra != null) {
             fileName.text = nameExtra
             path = pathExtra
-        }
-        else {
+        } else {
             Toast.makeText(this, "Error: Data not available", Toast.LENGTH_SHORT).show()
             finish()
         }

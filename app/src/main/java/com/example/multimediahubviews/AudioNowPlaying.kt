@@ -4,19 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.FragmentNowPlayingBinding
 
 
 class AudioNowPlaying : Fragment() {
-    companion object{
+    companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: FragmentNowPlayingBinding
     }
@@ -49,18 +49,18 @@ class AudioNowPlaying : Fragment() {
 
         }
 
-        binding.root.setOnClickListener{
-            val intent = Intent(requireContext(),AudioPlayer::class.java)
-            intent.putExtra("index",AudioPlayer.songPosition)
-            intent.putExtra("class","AudioNowPlaying")
-            ContextCompat.startActivity(requireContext(), intent,null)
+        binding.root.setOnClickListener {
+            val intent = Intent(requireContext(), AudioPlayer::class.java)
+            intent.putExtra("index", AudioPlayer.songPosition)
+            intent.putExtra("class", "AudioNowPlaying")
+            ContextCompat.startActivity(requireContext(), intent, null)
         }
         return view
     }
 
     override fun onResume() {
         super.onResume()
-        if (AudioPlayer.audioService != null){
+        if (AudioPlayer.audioService != null) {
             binding.root.visibility = View.VISIBLE
             binding.songNameNP.isSelected = true
 
@@ -77,13 +77,14 @@ class AudioNowPlaying : Fragment() {
         }
     }
 
-    private fun playMusic(){
+    private fun playMusic() {
         AudioPlayer.audioService!!.mediaPlayer!!.start()
         binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
         AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.baseline_pause_24)
         AudioPlayer.isPlaying = true
     }
+
     private fun pauseMusic() {
         AudioPlayer.audioService!!.mediaPlayer!!.pause()
         binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)

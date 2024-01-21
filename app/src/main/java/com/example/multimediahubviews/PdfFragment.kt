@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.ProgressBar
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -28,7 +27,6 @@ class PdfFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var pdfAdapter: PdfAdapter
     private lateinit var pdfList: ArrayList<File>
-    private lateinit var progressBar: ProgressBar
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private var spanCount: Int = 1
@@ -43,7 +41,6 @@ class PdfFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recycler_view)
         searchView = view.findViewById(R.id.search_view)
-        progressBar = view.findViewById(R.id.progressBar)
 
         pdfList = arrayListOf()
         sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
@@ -83,9 +80,8 @@ class PdfFragment : Fragment() {
         setUpSearch()
         val files = getAllFiles()
         pdfList.addAll(files)
-        pdfAdapter = PdfAdapter(pdfList,requireActivity())
+        pdfAdapter = PdfAdapter(pdfList, requireActivity())
         recyclerView.adapter = pdfAdapter
-        progressBar.visibility = View.VISIBLE
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
 
@@ -94,7 +90,7 @@ class PdfFragment : Fragment() {
         return view
     }
 
-    private fun setUpView(){
+    private fun setUpView() {
         spanCount = if (isGridPdf) {
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
@@ -110,6 +106,7 @@ class PdfFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     filter(newText)
@@ -124,20 +121,21 @@ class PdfFragment : Fragment() {
     fun filter(newText: String) {
         val list1: MutableList<File> = ArrayList()
 
-        for(file: File in pdfList){
-            if (file.name.lowercase(Locale.getDefault()).contains(newText)){
+        for (file: File in pdfList) {
+            if (file.name.lowercase(Locale.getDefault()).contains(newText)) {
                 list1.add(file)
             }
         }
         pdfAdapter.filterList(list1)
     }
 
-    private fun getAllFiles(): List<File>{
+    private fun getAllFiles(): List<File> {
         val uri = MediaStore.Files.getContentUri("external")
         val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
         val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
         val selectionArgs = arrayOf("application/pdf")
-        val cursor: Cursor? = context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
+        val cursor: Cursor? =
+            context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
         val list = arrayListOf<File>()
         val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)
 

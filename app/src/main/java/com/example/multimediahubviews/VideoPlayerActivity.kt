@@ -1,7 +1,5 @@
 package com.example.multimediahubviews
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
@@ -22,7 +20,6 @@ import com.example.multimediahubviews.databinding.ActivityPlayerBinding
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.mediacodec.MediaCodecAdapter.Configuration
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import java.io.File
 
@@ -55,7 +52,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         WindowInsetsControllerCompat(window, binding.root).let { controller ->
             //controller.hide(WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE)
             //controller.systemBarsBehavior =
-                //WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            //WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
         //for handling video file intent
@@ -157,9 +154,10 @@ class VideoPlayerActivity : AppCompatActivity() {
         }
 
         findViewById<ImageButton>(R.id.orientationBtn).setOnClickListener {
-            requestedOrientation = if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT)
-                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-            else ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            requestedOrientation =
+                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT)
+                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                else ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
         }
     }
 
@@ -228,14 +226,16 @@ class VideoPlayerActivity : AppCompatActivity() {
                 controller.hide(WindowInsetsCompat.Type.navigationBars())
                 controller.hide(WindowInsetsCompat.Type.statusBars())
                 //controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        } }else {
+            }
+        } else {
             binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
             binding.fullScreenBtn.setImageResource(R.drawable.baseline_fullscreen_24)
             WindowCompat.setDecorFitsSystemWindows(window, true)
             WindowInsetsControllerCompat(window, binding.root).let { controller ->
                 controller.show(WindowInsetsCompat.Type.navigationBars())
-                controller.show(WindowInsetsCompat.Type.statusBars())}
+                controller.show(WindowInsetsCompat.Type.statusBars())
+            }
         }
     }
 

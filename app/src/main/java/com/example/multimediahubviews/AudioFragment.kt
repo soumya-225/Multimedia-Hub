@@ -23,7 +23,7 @@ import java.util.Locale
 var isGridAudio: Boolean = false
 
 class AudioFragment : Fragment() {
-    companion object{
+    companion object {
         var musicListMA: ArrayList<AudioModel> = ArrayList()
     }
 
@@ -80,7 +80,7 @@ class AudioFragment : Fragment() {
 
         setUpSearch()
         musicListMA = getAllAudios()
-        audioAdapter = AudioAdapter(musicListMA,requireContext())
+        audioAdapter = AudioAdapter(musicListMA, requireContext())
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -95,18 +95,18 @@ class AudioFragment : Fragment() {
         setUpView()
     }
 
-    private fun setUpView(){
+    private fun setUpView() {
         spanCount = if (isGridAudio) {
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else 1
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
-        audioAdapter = AudioAdapter(audioList,requireContext())
+        audioAdapter = AudioAdapter(audioList, requireContext())
         recyclerView.adapter = audioAdapter
         audioAdapter.filterList(getAllAudios())
     }
 
-    private fun getAllAudios(): ArrayList<AudioModel>{
+    private fun getAllAudios(): ArrayList<AudioModel> {
         val tempList = ArrayList<AudioModel>()
 
         val contentResolver = requireContext().contentResolver
@@ -123,24 +123,33 @@ class AudioFragment : Fragment() {
 
         val cursor = contentResolver.query(audioUri, projection, null, null, sortOrder)
 
-        if(cursor != null)
-            if(cursor.moveToFirst())
+        if (cursor != null)
+            if (cursor.moveToFirst())
                 do {
-                    val titleC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-                    val sizeC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
-                    val pathC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
-                    val lastModifiedC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
-                    val durationC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
-                    val albumIdC = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)).toString()
+                    val titleC =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+                    val sizeC =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
+                    val pathC =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
+                    val lastModifiedC =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
+                    val durationC =
+                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+                    val albumIdC =
+                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
+                            .toString()
                     val uri = Uri.parse("content://media/external/audio/albumart")
                     val artUriC = Uri.withAppendedPath(uri, albumIdC)
 
                     try {
                         val file = File(pathC)
-                        val audio = AudioModel(pathC, titleC, durationC, sizeC, lastModifiedC, artUriC)
-                        if(file.exists()) tempList.add(audio)
-                    }catch (_:Exception){}
-                }while (cursor.moveToNext())
+                        val audio =
+                            AudioModel(pathC, titleC, durationC, sizeC, lastModifiedC, artUriC)
+                        if (file.exists()) tempList.add(audio)
+                    } catch (_: Exception) {
+                    }
+                } while (cursor.moveToNext())
         cursor?.close()
         return tempList
     }
@@ -150,6 +159,7 @@ class AudioFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     filter(newText)
@@ -164,8 +174,8 @@ class AudioFragment : Fragment() {
     fun filter(newText: String) {
         val list1: MutableList<AudioModel> = ArrayList()
 
-        for(file: AudioModel in audioList){
-            if (file.title.lowercase(Locale.getDefault()).contains(newText)){
+        for (file: AudioModel in musicListMA) {
+            if (file.title.lowercase(Locale.getDefault()).contains(newText)) {
                 list1.add(file)
             }
         }

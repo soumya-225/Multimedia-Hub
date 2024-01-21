@@ -13,12 +13,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.VideoRvItemBinding
 
-class VideoAdapter(private val context: Context, private var videoList: ArrayList<VideoModel>):
+class VideoAdapter(private val context: Context, private var videoList: ArrayList<VideoModel>) :
     RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
 
-        private lateinit var thumbnail: ImageView
+    private lateinit var thumbnail: ImageView
 
-    class ViewHolder(binding: VideoRvItemBinding): RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(binding: VideoRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.videoFileName
         val size = binding.videoFileSize
         val lastModified = binding.videoLastModified
@@ -30,23 +30,23 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(VideoRvItemBinding.inflate(LayoutInflater.from(context),parent,false))
+        return ViewHolder(VideoRvItemBinding.inflate(LayoutInflater.from(context), parent, false))
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (isGridVideo){
+        if (isGridVideo) {
             holder.listCard.visibility = View.GONE
             holder.gridCard.visibility = View.VISIBLE
             thumbnail = holder.imageGrid
-        }
-        else{
+        } else {
             holder.listCard.visibility = View.VISIBLE
             holder.gridCard.visibility = View.GONE
             thumbnail = holder.imageList
         }
         holder.title.text = videoList[position].title
         holder.size.text = parseFileLength(videoList[position].size.toLong())
-        holder.lastModified.text = convertEpochToDate(videoList[position].lastModified.toLong()*1000)
+        holder.lastModified.text =
+            convertEpochToDate(videoList[position].lastModified.toLong() * 1000)
         Glide.with(context)
             .asBitmap()
             .load(videoList[position].artUri)
@@ -71,10 +71,10 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
         this.notifyDataSetChanged()
     }
 
-    private fun sendIntent(pos: Int, ref: String){
+    private fun sendIntent(pos: Int, ref: String) {
         VideoPlayerActivity.position = pos
         val intent = Intent(context, VideoPlayerActivity::class.java)
-        intent.putExtra("class",ref)
+        intent.putExtra("class", ref)
         ContextCompat.startActivity(context, intent, null)
     }
 

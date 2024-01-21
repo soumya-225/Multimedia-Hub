@@ -27,18 +27,16 @@ import java.util.Locale
 
 var isGridImage: Boolean = false
 
-class ImageFragment() : Fragment() {
+class ImageFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var list: ArrayList<ImageModel>
     private lateinit var imageAdapter: ImageAdapter
-    private lateinit var imageAdapterGrid: ImageAdapterGrid
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private lateinit var imageList: ArrayList<ImageModel>
     private var spanCount = 1
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun setupView() {
+    private fun setupView() {
         spanCount = if (isGridImage) {
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
@@ -139,7 +137,6 @@ class ImageFragment() : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getAllImages(context: Context): ArrayList<ImageModel> {
         val list = ArrayList<ImageModel>()
         val collection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -212,7 +209,7 @@ class ImageFragment() : Fragment() {
                     val pathC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
                     val lastModifiedC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED))
                     val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        idC.toLong()
+                        idC
                     )
 
 
@@ -229,7 +226,6 @@ class ImageFragment() : Fragment() {
 
     private fun setUpSearch() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -247,7 +243,7 @@ class ImageFragment() : Fragment() {
     fun filter(newText: String) {
         val list1: MutableList<ImageModel> = ArrayList()
 
-        for(file: ImageModel in list){
+        for(file: ImageModel in imageList){
             if (file.title.lowercase(Locale.getDefault()).contains(newText)){
                 list1.add(file)
             }
@@ -255,7 +251,6 @@ class ImageFragment() : Fragment() {
         imageAdapter.filterList(list1)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         setupView()

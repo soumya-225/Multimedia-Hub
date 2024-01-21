@@ -4,7 +4,6 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +17,14 @@ import com.bumptech.glide.request.RequestOptions
 class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Context) :
     RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
 
-        private var layoutFile = R.layout.audio_rv_item
+    private var layoutFile = R.layout.audio_rv_item
+
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView
         var size: TextView
         var lastModified: TextView
         var image: ImageView
+
         init {
             titleTextView = itemView.findViewById(R.id.file_name)
             size = itemView.findViewById(R.id.file_size)
@@ -43,13 +44,8 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
         val songData = songsList[position]
         holder.titleTextView.text = songData.title
         holder.size.text = parseFileLength(songData.size.toLong())
-        holder.lastModified.text = convertEpochToDate(songData.lastModified.toLong()*1000)
+        holder.lastModified.text = convertEpochToDate(songData.lastModified.toLong() * 1000)
 
-        if (MyMediaPlayer.currentIndex == position) {
-            holder.titleTextView.setTextColor(Color.parseColor("#FF0000"))
-        } else {
-            holder.titleTextView.setTextColor(Color.parseColor("#000000"))
-        }
 
         Glide.with(context)
             .asBitmap()
@@ -57,11 +53,11 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
             .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
             .into(holder.image)
 
-        holder.itemView.setOnClickListener{
-            val intent = Intent(context,AudioPlayer::class.java)
-            intent.putExtra("index",position)
-            intent.putExtra("class","AudioAdapter")
-            ContextCompat.startActivity(context, intent,null)
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, AudioPlayer::class.java)
+            intent.putExtra("index", position)
+            intent.putExtra("class", "AudioAdapter")
+            ContextCompat.startActivity(context, intent, null)
         }
     }
 
