@@ -8,15 +8,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.util.Log
-import android.view.GestureDetector
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import androidx.viewpager2.widget.ViewPager2
+import com.example.multimediahubviews.VideoPlayerActivity.Companion.position
 import com.example.multimediahubviews.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -30,27 +33,89 @@ private var isLaunched = true
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var gestureDetector: GestureDetector
     val context = this
+    private lateinit var pagerMain: ViewPager2
+    private var fragmentArrList: ArrayList<Fragment> = ArrayList()
+    private lateinit var bottomNav: BottomNavigationView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setSupportActionBar(binding.topAppBar)
+        setContentView(binding.root)
+
+        bottomNav = findViewById(R.id.bottomNavigationView)
+
+        pagerMain = findViewById(R.id.pagerMain)
+        fragmentArrList.add(ImageFragment())
+        fragmentArrList.add(VideoFragment())
+        fragmentArrList.add(AudioFragment())
+        fragmentArrList.add(PdfFragment())
+
+        val adapterViewPager: AdapterViewPager = AdapterViewPager(this,fragmentArrList)
+        pagerMain.adapter = adapterViewPager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                binding = ActivityMainBinding.inflate(layoutInflater)
-                setSupportActionBar(binding.topAppBar)
-                setContentView(binding.root)
-                if (isLaunched) {
-                    replaceFragment(ImageFragment())
-                    isLaunched = false
-                }
-                binding.bottomNavigationView.setOnItemSelectedListener {
-                    setFragment(it.itemId)
+                pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                    override fun onPageSelected(position: Int) {
+                        when (position){
+                            0 -> bottomNav.selectedItemId = R.id.image
+                            1 -> bottomNav.selectedItemId = R.id.video
+                            2 -> bottomNav.selectedItemId = R.id.music
+                            3 -> bottomNav.selectedItemId = R.id.pdf
+                            else -> {}
+                        }
+
+                        super.onPageSelected(position)
+                    }
+                })
+                bottomNav.setOnItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.image -> {
+                            pagerMain.currentItem = 0
+                            binding.nowPlaying.visibility = View.GONE
+                        }
+
+                        R.id.video -> {
+                            pagerMain.currentItem = 1
+                            binding.nowPlaying.visibility = View.GONE
+                        }
+                        R.id.music -> {
+                            pagerMain.currentItem = 2
+                            binding.nowPlaying.visibility = View.VISIBLE
+                        }
+                        R.id.pdf -> {
+                            pagerMain.currentItem = 3
+                            binding.nowPlaying.visibility = View.GONE
+                        }
+                        else -> {}
+                    }
                     true
                 }
-            } else {
+            }else{
                 requestStoragePermissions()
             }
         }
+
+
+
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Environment.isExternalStorageManager()) {
+
+
+            if (isLaunched) {
+                replaceFragment(ImageFragment())
+                isLaunched = false
+            }
+            binding.bottomNavigationView.setOnItemSelectedListener {
+                setFragment(it.itemId)
+                true
+            }
+        } else {
+            requestStoragePermissions()
+        }
+    }*/
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             binding.bottomNavigationView.visibility = View.GONE
@@ -72,25 +137,21 @@ class MainActivity : AppCompatActivity() {
     private fun setFragment(itemId: Int) {
         when (itemId) {
             R.id.image -> {
-                Log.d("TagHere", "Image Frag")
                 replaceFragment(ImageFragment())
                 binding.nowPlaying.visibility = View.GONE
             }
 
             R.id.video -> {
-                Log.d("TagHere", "Video Frag")
                 replaceFragment(VideoFragment())
                 binding.nowPlaying.visibility = View.GONE
             }
 
             R.id.music -> {
-                Log.d("TagHere", "Music Frag")
                 replaceFragment(AudioFragment())
                 binding.nowPlaying.visibility = View.VISIBLE
             }
 
             R.id.pdf -> {
-                Log.d("TagHere", "PDF Frag")
                 replaceFragment(PdfFragment())
                 binding.nowPlaying.visibility = View.GONE
             }

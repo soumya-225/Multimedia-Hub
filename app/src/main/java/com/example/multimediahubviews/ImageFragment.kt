@@ -21,6 +21,7 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -61,6 +62,7 @@ class ImageFragment : Fragment() {
         imageAdapter.filterList(getAllImages(requireContext()))
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,19 +76,25 @@ class ImageFragment : Fragment() {
 
         sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC"
         recyclerView = view.findViewById(R.id.recyclerView)
-        searchView = view.findViewById(R.id.search_view)
         list = ArrayList()
 
         if (darkModeState) {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
-            //lightMode()
+            searchView = view.findViewById(R.id.search_view1)
+            binding.searchView2.visibility = View.GONE
+            binding.searchView1.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
         }
         else{
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            searchView = view.findViewById(R.id.search_view2)
+            binding.searchView1.visibility = View.GONE
+            binding.searchView2.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
             //darkMode()
         }
 
@@ -144,7 +152,7 @@ class ImageFragment : Fragment() {
             else MediaStore.Images.Media.DATE_MODIFIED + " DESC"
             true
         }*/
-        setUpSearch()
+        setUpSearch(searchView)
 
         imageList = getAllImages2()
         imageAdapter = ImageAdapter(imageList,requireContext())
@@ -251,7 +259,7 @@ class ImageFragment : Fragment() {
         return tempList
     }
 
-    private fun setUpSearch() {
+    private fun setUpSearch(searchView: SearchView) {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false

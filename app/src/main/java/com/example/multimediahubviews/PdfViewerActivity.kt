@@ -22,6 +22,8 @@ class PdfViewerActivity : AppCompatActivity() {
     private lateinit var fileName: TextView
     private lateinit var scroll: ImageView
     private var sType: Boolean = false
+    private var dType: Boolean = false
+    private lateinit var darkMode: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,8 @@ class PdfViewerActivity : AppCompatActivity() {
         back = findViewById(R.id.back)
         fileName = findViewById(R.id.file_name)
         scroll = findViewById(R.id.scrollButton)
+        darkMode = findViewById(R.id.dark_pdf)
+
 
         getIntentData()
     }
@@ -62,7 +66,17 @@ class PdfViewerActivity : AppCompatActivity() {
             .enableAnnotationRendering(true)
             .scrollHandle(DefaultScrollHandle(this))
             .spacing(2)
+            .nightMode(dType)
             .load()
+    }
+
+    private fun darkPdf(){
+        darkMode.setOnClickListener {
+            dType = !dType
+            if (dType) darkMode.setImageResource(R.drawable.baseline_light_mode_24_dark)
+            else darkMode.setImageResource(R.drawable.baseline_dark_mode_24)
+            showPdf()
+        }
     }
 
     private fun back() {
@@ -92,6 +106,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
         back()
         scrollType()
+        darkPdf()
         fullscreen()
         showPdf()
     }

@@ -1,12 +1,14 @@
 package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -16,6 +18,8 @@ import com.example.multimediahubviews.databinding.FragmentNowPlayingBinding
 
 
 class AudioNowPlaying : Fragment() {
+
+    private var isNowPlaying: Boolean = AudioPlayer.isPlaying
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var binding: FragmentNowPlayingBinding
@@ -30,7 +34,8 @@ class AudioNowPlaying : Fragment() {
         binding = FragmentNowPlayingBinding.bind(view)
         binding.root.visibility = View.GONE
         binding.playPauseBtnNP.setOnClickListener {
-            if (AudioPlayer.isPlaying) pauseMusic()
+            isNowPlaying = !isNowPlaying
+            if (isNowPlaying) pauseMusic()
             else playMusic()
         }
         binding.nextBtnNP.setOnClickListener {
@@ -51,9 +56,14 @@ class AudioNowPlaying : Fragment() {
 
         binding.root.setOnClickListener {
             val intent = Intent(requireContext(), AudioPlayer::class.java)
+            val options = ActivityOptions.makeCustomAnimation(
+                context,
+                androidx.appcompat.R.anim.abc_slide_in_bottom,
+                androidx.appcompat.R.anim.abc_slide_out_bottom
+            )
             intent.putExtra("index", AudioPlayer.songPosition)
             intent.putExtra("class", "AudioNowPlaying")
-            ContextCompat.startActivity(requireContext(), intent, null)
+            ContextCompat.startActivity(requireContext(), intent, options.toBundle())
         }
         return view
     }

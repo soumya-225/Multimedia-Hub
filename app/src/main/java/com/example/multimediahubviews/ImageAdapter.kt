@@ -1,12 +1,15 @@
 package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +20,7 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     RecyclerView.Adapter<ImageAdapter.ViewHolder>() {
 
     private var layoutFile: Int = R.layout.image_rv_item_list
+    private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView
@@ -55,14 +59,25 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
         holder.size.text = parseFileLength(imageModel.size.toLong())
         holder.lastModified.text = convertEpochToDate(imageModel.lastModified.toLong() * 1000)
 
+        setAnimation(holder.itemView,position)
+
         holder.itemView.setOnClickListener {
             val parseData = imageList[position].path.toString()
             val fileName = imageList[position].title
+
+            val options = ActivityOptions.makeCustomAnimation(
+                context,
+                androidx.appcompat.R.anim.abc_fade_in,
+                androidx.appcompat.R.anim.abc_fade_out
+            )
             val intent = Intent(context, ImageViewerActivity::class.java)
                 .putExtra("parseData", parseData)
                 .putExtra("fileName", fileName)
                 .addFlags(FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
+            context.startActivity(intent,options.toBundle())
+
+            //MainActivity().overridePendingTransition(androidx.appcompat.R.anim.abc_fade_out,androidx.appcompat.R.anim.abc_fade_out)
+
         }
     }
 
@@ -70,5 +85,14 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     fun filterList(list: List<ImageModel>) {
         this.imageList = list as ArrayList<ImageModel>
         this.notifyDataSetChanged()
+    }
+
+    private fun setAnimation(viewToAnimate: View, position: Int){
+        if (position > lastPosition) {
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            viewToAnimate.startAnimation(slideIn)
+            lastPosition = position
+        }
+
     }
 }

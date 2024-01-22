@@ -13,6 +13,7 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ class VideoFragment : Fragment() {
     private lateinit var binding: FragmentVideoBinding
     private var spanCount: Int = 1
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,13 +52,20 @@ class VideoFragment : Fragment() {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
-            //lightMode()
+            searchView = view.findViewById(R.id.search_view1)
+            binding.searchView2.visibility = View.GONE
+            binding.searchView1.visibility = View.VISIBLE
+            binding.VideoRV.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
+
         }
         else{
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
-            //darkMode()
+            searchView = view.findViewById(R.id.search_view2)
+            binding.searchView1.visibility = View.GONE
+            binding.searchView2.visibility = View.VISIBLE
+            binding.VideoRV.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
         }
 
         sortButton.setOnMenuItemClickListener {
@@ -70,6 +79,7 @@ class VideoFragment : Fragment() {
                     R.id.size -> sortOrder = MediaStore.Video.Media.SIZE + " DESC"
                 }
                 videoAdapter.filterList(getAllVideos())
+                updateVideoListAndAdapter()
                 true
             }
             popupMenu.show()
@@ -89,7 +99,6 @@ class VideoFragment : Fragment() {
             true
         }
 
-        searchView = view.findViewById(R.id.search_view)
         setUpSearch()
         videoList = getAllVideos()
         videoAdapter = VideoAdapter(requireContext(), videoList)
@@ -207,6 +216,7 @@ class VideoFragment : Fragment() {
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
             1
         }
+        videoList = getAllVideos()
         binding.VideoRV.setHasFixedSize(true)
         binding.VideoRV.setItemViewCacheSize(10)
         binding.VideoRV.layoutManager = GridLayoutManager(context, spanCount)
@@ -218,5 +228,10 @@ class VideoFragment : Fragment() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         setUpView()
+    }
+
+    private fun updateVideoListAndAdapter() {
+        videoList = getAllVideos() // Get the sorted/filtered list
+        videoAdapter.filterList(videoList) // Update the adapter with the new list
     }
 }

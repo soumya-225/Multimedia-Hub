@@ -23,7 +23,7 @@
             app:title="MultiMedia Hub">
 
             <android.widget.SearchView
-                android:id="@+id/search_view"
+                android:id="@+id/search_view1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -31,6 +31,16 @@
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Search PDFs..."
                 android:searchIcon="@drawable/baseline_search_24" />
+
+            <android.widget.SearchView
+                android:id="@+id/search_view2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:iconifiedByDefault="false"
+                android:queryBackground="@android:color/transparent"
+                android:queryHint="Search PDFs..."
+                android:searchIcon="@drawable/baseline_search_24_light" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 

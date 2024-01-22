@@ -2,11 +2,14 @@ package com.example.multimediahubviews
 
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -14,10 +17,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Context) :
+class AudioAdapter(private var songsList: List<AudioModel>, var context: Context) :
     RecyclerView.Adapter<AudioAdapter.ViewHolder>() {
 
     private var layoutFile = R.layout.audio_rv_item
+    private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView
@@ -53,11 +57,18 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
             .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
             .into(holder.image)
 
+        setAnimation(holder.itemView,position)
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context, AudioPlayer::class.java)
+            val options = ActivityOptions.makeCustomAnimation(
+                context,
+                androidx.appcompat.R.anim.abc_slide_in_bottom,
+                androidx.appcompat.R.anim.abc_slide_out_bottom
+            )
             intent.putExtra("index", position)
             intent.putExtra("class", "AudioAdapter")
-            ContextCompat.startActivity(context, intent, null)
+            ContextCompat.startActivity(context, intent, options.toBundle())
         }
     }
 
@@ -67,7 +78,16 @@ class AudioAdapter(private var songsList: ArrayList<AudioModel>, var context: Co
 
     @SuppressLint("NotifyDataSetChanged")
     fun filterList(list: List<AudioModel>) {
-        this.songsList = list as ArrayList<AudioModel>
+        this.songsList = list
         this.notifyDataSetChanged()
+    }
+
+    private fun setAnimation(viewToAnimate: View, position: Int){
+        if (position > lastPosition) {
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            viewToAnimate.startAnimation(slideIn)
+            lastPosition = position
+        }
+
     }
 }

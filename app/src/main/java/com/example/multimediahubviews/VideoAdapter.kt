@@ -1,11 +1,14 @@
 package com.example.multimediahubviews
 
 import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -13,10 +16,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.multimediahubviews.databinding.VideoRvItemBinding
 
-class VideoAdapter(private val context: Context, private var videoList: ArrayList<VideoModel>) :
+class VideoAdapter(private val context: Context, private var videoList: List<VideoModel>) :
     RecyclerView.Adapter<VideoAdapter.ViewHolder>() {
 
     private lateinit var thumbnail: ImageView
+    private var lastPosition: Int = -1
 
     class ViewHolder(binding: VideoRvItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.videoFileName
@@ -53,6 +57,8 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
             .apply(RequestOptions().placeholder(R.drawable.play).centerCrop())
             .into(thumbnail)
 
+        setAnimation(holder.itemView,position)
+
         holder.root.setOnClickListener {
             when {
                 VideoFragment.search -> sendIntent(position, ref = "Searched Videos")
@@ -66,16 +72,33 @@ class VideoAdapter(private val context: Context, private var videoList: ArrayLis
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun filterList(list: List<VideoModel>) {
-        this.videoList = list as ArrayList<VideoModel>
+    fun filterList(videoList: List<VideoModel>) {
+        this.videoList = videoList
         this.notifyDataSetChanged()
     }
 
     private fun sendIntent(pos: Int, ref: String) {
         VideoPlayerActivity.position = pos
         val intent = Intent(context, VideoPlayerActivity::class.java)
+
+        val options = ActivityOptions.makeCustomAnimation(
+            context,
+            androidx.appcompat.R.anim.abc_slide_in_bottom,
+            androidx.appcompat.R.anim.abc_slide_out_bottom
+        )
         intent.putExtra("class", ref)
-        ContextCompat.startActivity(context, intent, null)
+        ContextCompat.startActivity(context, intent, options.toBundle())
     }
+
+    private fun setAnimation(viewToAnimate: View, position: Int){
+        if (position > lastPosition) {
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            viewToAnimate.startAnimation(slideIn)
+            lastPosition = position
+        }
+
+    }
+
+
 
 }

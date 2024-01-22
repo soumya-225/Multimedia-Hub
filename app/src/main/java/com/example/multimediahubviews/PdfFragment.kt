@@ -4,6 +4,7 @@ package com.example.multimediahubviews
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.database.Cursor
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
@@ -12,6 +13,8 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +35,7 @@ class PdfFragment : Fragment() {
     private var spanCount: Int = 1
     private lateinit var binding: FragmentPdfBinding
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +45,6 @@ class PdfFragment : Fragment() {
         binding = FragmentPdfBinding.bind(view)
 
         recyclerView = view.findViewById(R.id.recycler_view)
-        searchView = view.findViewById(R.id.search_view)
 
         pdfList = arrayListOf()
         sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
@@ -50,11 +53,21 @@ class PdfFragment : Fragment() {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            searchView = view.findViewById(R.id.search_view1)
+            binding.searchView2.visibility = View.GONE
+            binding.searchView1.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
+
+
         }
         else{
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            searchView = view.findViewById(R.id.search_view2)
+            binding.searchView1.visibility = View.GONE
+            binding.searchView2.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
         }
 
 
