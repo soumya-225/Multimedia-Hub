@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Multimedia Hub</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fullscreen_image_content_description">Image</string>
     <string name="pdf_viewer_toolbar_back_button_content_description">Back</string>
     <string name="pdf_viewer_toolbar_textview">TextView</string>
@@ -18,10 +17,6 @@
     <string name="sort">Sort</string>
     <string name="view_type">View Type</string>
     <string name="dark_mode">Dark Mode</string>
-
-    <string name="test_mp3">"https://storage.googleapis.com/exoplayer-test-media-0/play.mp3"</string>
-    <string name="media_url_mp4">https://storage.googleapis.com/exoplayer-test-media-0/BigBuckBunny_320x180.mp4</string>
-    <string name="myTestMp4">"https://download.blender.org/demo/movies/BBB/bbb_sunflower_1080p_30fps_normal.mp4"</string>
     <string name="sort_by">SORT BY:</string>
     <string name="name">Name</string>
     <string name="date_modified">Date Modified</string>

@@ -25,19 +25,17 @@ class AudioNotificationReceiver : BroadcastReceiver() {
     private fun playMusic() {
         AudioPlayer.isPlaying = true
         AudioPlayer.audioService!!.mediaPlayer!!.start()
-        AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
-        AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-        AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.baseline_pause_24)
-
+        AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+        AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
+        AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.pause_icon_dark)
     }
 
     private fun pauseMusic() {
         AudioPlayer.isPlaying = false
         AudioPlayer.audioService!!.mediaPlayer!!.pause()
-        AudioPlayer.audioService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
-        AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
-        AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.baseline_play_arrow_24)
-
+        AudioPlayer.audioService!!.showNotification(R.drawable.play_icon_dark, 0F)
+        AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.play_icon_dark)
+        AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.play_icon_dark)
     }
 
     private fun prevNextSong(increment: Boolean, context: Context) {
@@ -47,20 +45,18 @@ class AudioNotificationReceiver : BroadcastReceiver() {
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).fitCenter())
             .into(AudioNowPlaying.binding.songImgNP)
 
-        AudioNowPlaying.binding.songNameNP.text =
-            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioNowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).fitCenter())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).fitCenter())
             .into(AudioPlayer.binding.songImgPA)
 
-        AudioPlayer.binding.songNamePA.text =
-            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioPlayer.binding.songNamePA.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
         playMusic()
     }

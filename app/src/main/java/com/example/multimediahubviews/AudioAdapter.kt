@@ -25,39 +25,40 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var titleTextView: TextView
-        var size: TextView
-        var lastModified: TextView
-        var image: ImageView
+        var sizeTextView: TextView
+        var lastModifiedTextView: TextView
+        var thumbnailImageView: ImageView
 
         init {
             titleTextView = itemView.findViewById(R.id.file_name)
-            size = itemView.findViewById(R.id.file_size)
-            lastModified = itemView.findViewById(R.id.last_modified)
-            image = itemView.findViewById(R.id.thumbnail)
+            sizeTextView = itemView.findViewById(R.id.file_size)
+            lastModifiedTextView = itemView.findViewById(R.id.last_modified)
+            thumbnailImageView = itemView.findViewById(R.id.thumbnail)
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         layoutFile = if (isGridAudio) R.layout.audio_rv_item_grid
         else R.layout.audio_rv_item
+
         val view: View = LayoutInflater.from(context).inflate(layoutFile, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val songData = songsList[position]
-        holder.titleTextView.text = songData.title
-        holder.size.text = parseFileLength(songData.size.toLong())
-        holder.lastModified.text = convertEpochToDate(songData.lastModified.toLong() * 1000)
 
+        holder.titleTextView.text = songData.title
+        holder.sizeTextView.text = parseFileLength(songData.size.toLong())
+        holder.lastModifiedTextView.text = convertEpochToDate(songData.lastModified.toLong() * 1000)
 
         Glide.with(context)
             .asBitmap()
             .load(songsList[position].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music).centerCrop())
-            .into(holder.image)
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).centerCrop())
+            .into(holder.thumbnailImageView)
 
-        setAnimation(holder.itemView,position)
+        setAnimation(holder.itemView, position)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, AudioPlayer::class.java)
@@ -82,12 +83,11 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
         this.notifyDataSetChanged()
     }
 
-    private fun setAnimation(viewToAnimate: View, position: Int){
+    private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }
-
     }
 }

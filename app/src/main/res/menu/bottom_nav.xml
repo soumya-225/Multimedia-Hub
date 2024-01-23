@@ -5,24 +5,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/image"
-        android:icon="@drawable/baseline_image_24"
+        android:icon="@drawable/image_icon"
         android:id="@+id/image"/>
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/video"
-        android:icon="@drawable/clapperboard"
+        android:icon="@drawable/video_icon"
         android:id="@+id/video"/>
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/music"
-        android:icon="@drawable/baseline_music_note_24"
+        android:icon="@drawable/audio_icon"
         android:id="@+id/music"/>
     <item
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:title="@string/pdf"
-        android:icon="@drawable/pdf_file1"
+        android:icon="@drawable/pdf_icon"
         android:id="@+id/pdf"/>
 </menu>

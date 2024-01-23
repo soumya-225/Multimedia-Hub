@@ -1,10 +1,6 @@
 package com.example.multimediahubviews
 
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.ContentUris
 import android.content.Context
@@ -22,7 +18,6 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.toColor
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,33 +29,17 @@ import java.util.Locale
 var isGridImage: Boolean = false
 
 class ImageFragment : Fragment() {
+    private lateinit var imageAdapter: ImageAdapter
+    private lateinit var binding: FragmentImageBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var list: ArrayList<ImageModel>
-    private lateinit var imageAdapter: ImageAdapter
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
     private lateinit var imageList: ArrayList<ImageModel>
     private var spanCount = 1
-    private lateinit var binding: FragmentImageBinding
 
 
-    private fun setupView() {
-        spanCount = if (isGridImage) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
-            else 3
-        } else {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
-            1
 
-        }
-        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
-        imageAdapter = ImageAdapter(list, requireContext())
-        recyclerView.adapter = imageAdapter
-        imageAdapter.filterList(getAllImages(requireContext()))
-    }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
@@ -79,37 +58,32 @@ class ImageFragment : Fragment() {
         list = ArrayList()
 
         if (darkModeState) {
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
             searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
         }
         else{
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.light_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_light)
             searchView = view.findViewById(R.id.search_view2)
             binding.searchView1.visibility = View.GONE
             binding.searchView2.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
-            //darkMode()
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_light, activity?.theme)
         }
 
-        //val layoutManager =
-
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
-            //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
             darkModeState = !darkModeState
             if (darkModeState) {
-                //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
+                Toast.makeText(context,"Turning Off Dark Mode...",Toast.LENGTH_SHORT).show()
                 lightMode()
             }
             else{
-                //binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-                //binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+                Toast.makeText(context,"Turning On Dark Mode...",Toast.LENGTH_SHORT).show()
                 darkMode()
             }
             true
@@ -118,7 +92,6 @@ class ImageFragment : Fragment() {
         binding.topAppBar.menu.findItem(R.id.view_switch).setOnMenuItemClickListener {
             isGridImage = !isGridImage
             setupView()
-            Log.d("MyAppTag", "onClick : $spanCount")
             true
         }
 
@@ -127,15 +100,13 @@ class ImageFragment : Fragment() {
 
             val popupMenu = PopupMenu(context, menuItemView)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
-            popupMenu.setOnMenuItemClickListener {
-                    menuItem ->
+            popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.name -> sortOrder = MediaStore.Images.Media.DISPLAY_NAME
                     R.id.date_modified -> sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC"
                     R.id.size -> sortOrder = MediaStore.Images.Media.SIZE + " DESC"
                 }
                 imageAdapter.filterList(getAllImages2())
-                //Toast.makeText(context, "You Clicked " + menuItem.title, Toast.LENGTH_SHORT).show()
                 true
             }
             popupMenu.show()
@@ -143,24 +114,9 @@ class ImageFragment : Fragment() {
 
         }
 
-
-
-
-        /*binding.topAppBar.menu.findItem(R.id.sort_switch).setOnMenuItemClickListener {
-            sortState = !sortState
-            sortOrder = if (sortState) MediaStore.Images.Media.DISPLAY_NAME
-            else MediaStore.Images.Media.DATE_MODIFIED + " DESC"
-            true
-        }*/
         setUpSearch(searchView)
-
         imageList = getAllImages2()
         imageAdapter = ImageAdapter(imageList,requireContext())
-
-        /*recyclerView.layoutManager = GridLayoutManager(context, 1)
-        imageAdapter = ImageAdapter(list, context!!)
-        recyclerView.adapter = imageAdapter*/
-
         binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -171,55 +127,26 @@ class ImageFragment : Fragment() {
         return view
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getAllImages(context: Context): ArrayList<ImageModel> {
-        val list = ArrayList<ImageModel>()
-        val collection: Uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
-            } else {
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-            }
-        val projection = arrayOf(
-            MediaStore.Images.Media._ID,
-            MediaStore.Images.Media.DISPLAY_NAME,
-            MediaStore.Images.Media.SIZE,
-            MediaStore.Images.Media.DATE_MODIFIED
-        )
-        //val sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC"
+    private fun setupView() {
+        spanCount = if (isGridImage) {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.list_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.list_icon_light)
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
+            else 3
+        } else {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
+            1
 
-        context.contentResolver.query(
-            collection,
-            projection,
-            null,
-            null,
-            sortOrder
-        ).use { cursor ->
-            val idColumn = cursor!!.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-            val displayNameColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME)
-            val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.SIZE)
-            val lastModifiedColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATE_MODIFIED)
-            cursor.moveToFirst()
-
-            while (cursor.moveToNext()) {
-                val id = cursor.getLong(idColumn)
-                val imageName = cursor.getString(displayNameColumn)
-                val size = cursor.getString(sizeColumn)
-                val lastModified = cursor.getString(lastModifiedColumn)
-                val contentUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id)
-                val imageModel = ImageModel(imageName, contentUri,size,lastModified)
-                list.add(imageModel)
-            }
-            //imageAdapter.notifyDataSetChanged()
-            cursor.close()
         }
-        //imageAdapter.filterList(list)
-        //imageAdapter.notifyDataSetChanged()
-        return list
+        recyclerView.layoutManager = GridLayoutManager(context, spanCount)
+        imageAdapter = ImageAdapter(list, requireContext())
+        recyclerView.adapter = imageAdapter
+        imageAdapter.filterList(getAllImages2())
     }
-
     private fun getAllImages2(): ArrayList<ImageModel>{
-
         val tempList = ArrayList<ImageModel>()
+
         val projection = arrayOf(
             MediaStore.Images.Media._ID,
             MediaStore.Images.Media.DISPLAY_NAME,

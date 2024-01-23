@@ -25,8 +25,8 @@
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/pdf_viewer_toolbar_back_button_content_description"
-                android:src="@drawable/baseline_arrow_back_24"
-                app:srcCompat="@drawable/baseline_arrow_back_24" />
+                android:src="@drawable/back_icon_dark"
+                app:srcCompat="@drawable/back_icon_dark" />
 
             <TextView
                 android:id="@+id/file_name"
@@ -52,8 +52,8 @@
                 android:layout_marginEnd="60dp"
                 android:layout_marginBottom="15dp"
                 android:contentDescription="@string/scroll"
-                android:src="@drawable/baseline_dark_mode_24"
-                app:srcCompat="@drawable/baseline_dark_mode_24" />
+                android:src="@drawable/night_mode_icon"
+                app:srcCompat="@drawable/night_mode_icon" />
 
             <ImageView
                 android:id="@+id/scrollButton"
@@ -66,8 +66,8 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginBottom="15dp"
                 android:contentDescription="@string/scroll"
-                android:src="@drawable/baseline_swipe_24"
-                app:srcCompat="@drawable/baseline_swipe_24" />
+                android:src="@drawable/swipe_horizontal_icon"
+                app:srcCompat="@drawable/swipe_horizontal_icon" />
 
         </RelativeLayout>
 

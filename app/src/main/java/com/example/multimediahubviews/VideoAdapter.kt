@@ -49,12 +49,12 @@ class VideoAdapter(private val context: Context, private var videoList: List<Vid
         }
         holder.title.text = videoList[position].title
         holder.size.text = parseFileLength(videoList[position].size.toLong())
-        holder.lastModified.text =
-            convertEpochToDate(videoList[position].lastModified.toLong() * 1000)
+        holder.lastModified.text = convertEpochToDate(videoList[position].lastModified.toLong() * 1000)
+
         Glide.with(context)
             .asBitmap()
             .load(videoList[position].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.play).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.video_thumbnail).centerCrop())
             .into(thumbnail)
 
         setAnimation(holder.itemView,position)
@@ -92,13 +92,9 @@ class VideoAdapter(private val context: Context, private var videoList: List<Vid
 
     private fun setAnimation(viewToAnimate: View, position: Int){
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }
-
     }
-
-
-
 }

@@ -46,12 +46,15 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             startService(intentService)
             musicListPA = ArrayList()
             musicListPA.add(getMusicDetails(intent.data!!))
+
             Glide.with(this)
                 .asBitmap()
                 .load(getImgArt(musicListPA[songPosition].path))
-                .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
+                .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
                 .into(binding.songImgPA)
+
             binding.songNamePA.text = musicListPA[songPosition].title
+
         } else initializeLayout()
 
         binding.playPauseBtnPA.setOnClickListener {
@@ -73,9 +76,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                     audioService!!.mediaPlayer!!.seekTo(progress)
                 }
             }
-
             override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
-
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
 
@@ -125,7 +126,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         Glide.with(this)
             .asBitmap()
             .load(musicListPA[songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.music2).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
             .into(binding.songImgPA)
 
         binding.songNamePA.text = musicListPA[songPosition].title
@@ -146,8 +147,8 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             audioService!!.mediaPlayer?.prepare()
             audioService!!.mediaPlayer?.start()
             isPlaying = true
-            binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-            audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
+            binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
+            audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
 
             binding.tvSeekBarStart.text =
                 convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
@@ -174,7 +175,6 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                 musicListPA.addAll(AudioFragment.musicListMA)
                 setLayout()
             }
-
             "AudioNowPlaying" -> {
                 Log.d("Tag2", songPosition.toString())
                 setLayout()
@@ -185,7 +185,6 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                 binding.seekBarPA.progress = audioService!!.mediaPlayer!!.currentPosition
                 binding.seekBarPA.max = audioService!!.mediaPlayer!!.duration
             }
-
             "MainActivity" -> {
                 val intent = Intent(this, AudioService::class.java)
                 bindService(intent, this, BIND_AUTO_CREATE)
@@ -214,15 +213,15 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
     }
 
     private fun playMusic() {
-        binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-        audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
+        binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
+        audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
         isPlaying = true
         audioService!!.mediaPlayer?.start()
     }
 
     private fun pauseMusic() {
-        binding.playPauseBtnPA.setIconResource(R.drawable.baseline_play_arrow_24)
-        audioService!!.showNotification(R.drawable.baseline_play_arrow_24, 0F)
+        binding.playPauseBtnPA.setIconResource(R.drawable.play_icon_dark)
+        audioService!!.showNotification(R.drawable.play_icon_dark, 0F)
         isPlaying = false
         audioService!!.mediaPlayer?.pause()
     }
@@ -246,7 +245,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         audioService = binder.currentService()
         createMediaPlayer()
         audioService!!.seekBarSetup()
-        audioService!!.showNotification(R.drawable.baseline_pause_24, 1F)
+        audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {

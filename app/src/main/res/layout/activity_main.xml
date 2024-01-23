@@ -30,7 +30,7 @@
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Search Files..."
-                android:searchIcon="@drawable/baseline_search_24" />
+                android:searchIcon="@drawable/search_icon_dark" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 

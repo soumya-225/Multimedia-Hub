@@ -31,9 +31,9 @@ class VideoFragment : Fragment() {
     }
 
     private lateinit var videoAdapter: VideoAdapter
+    private lateinit var binding: FragmentVideoBinding
     private lateinit var searchView: SearchView
     private lateinit var sortOrder: String
-    private lateinit var binding: FragmentVideoBinding
     private var spanCount: Int = 1
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -42,36 +42,41 @@ class VideoFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
-        setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_video, container, false)
+        setHasOptionsMenu(true)
+
         binding = FragmentVideoBinding.bind(view)
+        sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
 
         if (darkModeState) {
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
             searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
-            binding.VideoRV.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
-
-        }
-        else{
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            binding.VideoRV.verticalScrollbarThumbDrawable =
+                ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+        } else {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.light_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_light)
             searchView = view.findViewById(R.id.search_view2)
             binding.searchView1.visibility = View.GONE
             binding.searchView2.visibility = View.VISIBLE
-            binding.VideoRV.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+            binding.VideoRV.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.scroll_icon_light,
+                activity?.theme
+            )
         }
 
         sortButton.setOnMenuItemClickListener {
             val menuItemView: View = view.findViewById(R.id.sort_switch)
             val popupMenu = PopupMenu(context, menuItemView)
             popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.name -> sortOrder = MediaStore.Video.Media.DISPLAY_NAME
@@ -88,8 +93,13 @@ class VideoFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             darkModeState = !darkModeState
-            if (darkModeState) lightMode()
-            else darkMode()
+            if (darkModeState) {
+                Toast.makeText(context, "Turning Off Dark Mode...", Toast.LENGTH_SHORT).show()
+                lightMode()
+            } else {
+                Toast.makeText(context, "Turning On Dark Mode...", Toast.LENGTH_SHORT).show()
+                darkMode()
+            }
             true
         }
 
@@ -135,26 +145,13 @@ class VideoFragment : Fragment() {
         if (cursor != null)
             if (cursor.moveToNext())
                 do {
-                    val titleC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
-                            ?: "Unknown"
-                    val idC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
-                            ?: "Unknown"
-                    val folderC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
-                            ?: "Internal Storage"
-                    val sizeC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
-                            ?: "0"
-                    val pathC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
-                            ?: "Unknown"
-                    val lastModifiedC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))
-                    val durationC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION))
-                            ?.toLong() ?: 0L
+                    val titleC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME))
+                    val idC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+                    val folderC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME))
+                    val sizeC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE))
+                    val pathC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                    val lastModifiedC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED))
+                    val durationC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)).toLong()
 
                     try {
                         val file = File(pathC)
@@ -207,13 +204,17 @@ class VideoFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridVideo) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.list_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else{
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+        } else {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.grid_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.grid_icon_light)
             1
         }
         videoList = getAllVideos()
@@ -231,7 +232,7 @@ class VideoFragment : Fragment() {
     }
 
     private fun updateVideoListAndAdapter() {
-        videoList = getAllVideos() // Get the sorted/filtered list
-        videoAdapter.filterList(videoList) // Update the adapter with the new list
+        videoList = getAllVideos()
+        videoAdapter.filterList(videoList)
     }
 }

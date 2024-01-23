@@ -21,14 +21,14 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var name: TextView
-        var size: TextView
-        var lastModified: TextView
+        var titleTextView: TextView
+        var sizeTextView: TextView
+        var lastModifiedTextView: TextView
 
         init {
-            name = itemView.findViewById(R.id.pdf_file_name)
-            size = itemView.findViewById(R.id.pdf_file_size)
-            lastModified = itemView.findViewById(R.id.pdf_last_modified)
+            titleTextView = itemView.findViewById(R.id.pdf_file_name)
+            sizeTextView = itemView.findViewById(R.id.pdf_file_size)
+            lastModifiedTextView = itemView.findViewById(R.id.pdf_last_modified)
         }
     }
 
@@ -41,11 +41,11 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val file = list[position]
-        holder.name.text = file.name
-        holder.size.text = parseFileLength(file.length())
-        holder.lastModified.text = convertEpochToDate(file.lastModified())
+        holder.titleTextView.text = file.name
+        holder.sizeTextView.text = parseFileLength(file.length())
+        holder.lastModifiedTextView.text = convertEpochToDate(file.lastModified())
 
-        setAnimation(holder.itemView,position)
+        setAnimation(holder.itemView, position)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(activity, PdfViewerActivity::class.java)
@@ -56,7 +56,7 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
             )
             intent.putExtra("name", file.name)
             intent.putExtra("path", file.path)
-            activity.startActivity(intent,options.toBundle())
+            activity.startActivity(intent, options.toBundle())
         }
     }
 
@@ -70,12 +70,11 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
         this.notifyDataSetChanged()
     }
 
-    private fun setAnimation(viewToAnimate: View, position: Int){
+    private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(activity, R.anim.rv_anim)
+            val slideIn: Animation = AnimationUtils.loadAnimation(activity, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }
-
     }
 }

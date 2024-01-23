@@ -26,7 +26,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:contentDescription="@string/audio_icon"
-                android:src="@drawable/music"
+                android:src="@drawable/audio_thumnail"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

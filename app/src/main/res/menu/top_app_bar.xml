@@ -6,7 +6,7 @@
         android:id="@+id/dark_mode_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/baseline_dark_mode_24"
+        android:icon="@drawable/night_mode_icon"
         app:showAsAction="ifRoom"
         android:title="@string/dark_mode" />
 
@@ -14,7 +14,7 @@
         android:id="@+id/view_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/baseline_grid_view_24"
+        android:icon="@drawable/grid_icon_dark"
         app:showAsAction="always"
         android:title="@string/view_type" />
 
@@ -22,7 +22,7 @@
         android:id="@+id/sort_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/baseline_sort_24"
+        android:icon="@drawable/sort_icon_dark"
         app:showAsAction="always"
         android:title="@string/sort" />
 

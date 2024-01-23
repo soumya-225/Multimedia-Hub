@@ -20,7 +20,7 @@
             android:contentDescription="@string/pdf_icon"
             android:padding="24dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/pdf_icon" />
+            android:src="@drawable/pdf_thumbnail" />
 
         <TextView
             android:id="@+id/pdf_file_name"

@@ -23,16 +23,16 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView: ImageView
-        var title: TextView
-        var size: TextView
-        var lastModified: TextView
+        var thumbnailImageView: ImageView
+        var titleTextView: TextView
+        var sizeTextView: TextView
+        var lastModifiedTextView: TextView
 
         init {
-            imageView = itemView.findViewById(R.id.imageView2)
-            title = itemView.findViewById(R.id.image_file_name)
-            size = itemView.findViewById(R.id.image_file_size)
-            lastModified = itemView.findViewById(R.id.image_last_modified)
+            thumbnailImageView = itemView.findViewById(R.id.image_thumbnail)
+            titleTextView = itemView.findViewById(R.id.image_file_name)
+            sizeTextView = itemView.findViewById(R.id.image_file_size)
+            lastModifiedTextView = itemView.findViewById(R.id.image_last_modified)
         }
     }
 
@@ -43,21 +43,16 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
         return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return imageList.size
-
-    }
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(context)
             .load(imageList[position].path)
-            .apply(RequestOptions().placeholder(R.drawable.photo_gallery).centerCrop())
-            .into(holder.imageView)
+            .apply(RequestOptions().placeholder(R.drawable.image_thumbnail).centerCrop())
+            .into(holder.thumbnailImageView)
 
         val imageModel: ImageModel = imageList[position]
-        holder.title.text = imageModel.title
-        holder.size.text = parseFileLength(imageModel.size.toLong())
-        holder.lastModified.text = convertEpochToDate(imageModel.lastModified.toLong() * 1000)
+        holder.titleTextView.text = imageModel.title
+        holder.sizeTextView.text = parseFileLength(imageModel.size.toLong())
+        holder.lastModifiedTextView.text = convertEpochToDate(imageModel.lastModified.toLong() * 1000)
 
         setAnimation(holder.itemView,position)
 
@@ -74,11 +69,13 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
                 .putExtra("parseData", parseData)
                 .putExtra("fileName", fileName)
                 .addFlags(FLAG_ACTIVITY_NEW_TASK)
+
             context.startActivity(intent,options.toBundle())
-
-            //MainActivity().overridePendingTransition(androidx.appcompat.R.anim.abc_fade_out,androidx.appcompat.R.anim.abc_fade_out)
-
         }
+    }
+
+    override fun getItemCount(): Int {
+        return imageList.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -89,10 +86,9 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
 
     private fun setAnimation(viewToAnimate: View, position: Int){
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.rv_anim)
+            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }
-
     }
 }

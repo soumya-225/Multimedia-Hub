@@ -25,7 +25,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:contentDescription="@string/pdf_icon"
-                android:src="@drawable/pdf_icon" />
+                android:src="@drawable/pdf_thumbnail" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

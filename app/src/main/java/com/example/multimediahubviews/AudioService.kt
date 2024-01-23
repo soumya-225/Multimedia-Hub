@@ -13,6 +13,7 @@ import android.support.v4.media.session.MediaSessionCompat
 import androidx.core.app.NotificationCompat
 
 class AudioService : Service() {
+
     private var myBinder = MyBinder()
     var mediaPlayer: MediaPlayer? = null
     private lateinit var mediaSession: MediaSessionCompat
@@ -22,7 +23,6 @@ class AudioService : Service() {
         mediaSession = MediaSessionCompat(baseContext, "My Music")
         return myBinder
     }
-
     inner class MyBinder : Binder() {
         fun currentService(): AudioService {
             return this@AudioService
@@ -30,11 +30,17 @@ class AudioService : Service() {
     }
 
     fun showNotification(playPauseBtn: Int, playbackSpeed: Float) {
+
         val intent = Intent(baseContext, AudioPlayer::class.java)
         intent.putExtra("index", AudioPlayer.songPosition)
         intent.putExtra("class", "AudioNowPlaying")
 
-        val contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        val contentIntent = PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
 
         val prevIntent = Intent(
             baseContext,
@@ -87,15 +93,14 @@ class AudioService : Service() {
         val image = if (imgArt != null) {
             BitmapFactory.decodeByteArray(imgArt, 0, imgArt.size)
         } else {
-            BitmapFactory.decodeResource(resources, R.drawable.musicbg4)
+            BitmapFactory.decodeResource(resources, R.drawable.audio_notification_background)
         }
 
         val notification = NotificationCompat.Builder(baseContext, ApplicationClass.CHANNEL_ID)
             .setContentIntent(contentIntent)
             .setContentTitle(AudioPlayer.musicListPA[AudioPlayer.songPosition].title)
             .setContentText(AudioPlayer.musicListPA[AudioPlayer.songPosition].title)
-            .setSmallIcon(R.drawable.play)
-            //.setLargeIcon(BitmapFactory.decodeResource(resources, R.drawable.launcher_icon))
+            .setSmallIcon(R.drawable.video_thumbnail)
             .setLargeIcon(image)
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
@@ -104,10 +109,10 @@ class AudioService : Service() {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setOnlyAlertOnce(true)
-            .addAction(R.drawable.baseline_skip_previous_24, "Previous", prevPendingIntent)
+            .addAction(R.drawable.skip_previous_icon, "Previous", prevPendingIntent)
             .addAction(playPauseBtn, "Play", playPendingIntent)
-            .addAction(R.drawable.baseline_skip_next_24, "Next", nextPendingIntent)
-            .addAction(R.drawable.baseline_exit_to_app_24, "Exit", exitPendingIntent)
+            .addAction(R.drawable.skip_next_icon, "Next", nextPendingIntent)
+            .addAction(R.drawable.exit_icon, "Exit", exitPendingIntent)
             .build()
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
@@ -120,15 +125,6 @@ class AudioService : Service() {
                 .setActions(PlaybackStateCompat.ACTION_SEEK_TO)
                 .build())
         }*/
-
-
-        /*val intent = Intent(this, AudioService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }*/
-
         startForeground(2, notification)
     }
 
@@ -139,8 +135,8 @@ class AudioService : Service() {
             AudioPlayer.audioService!!.mediaPlayer?.reset()
             AudioPlayer.audioService!!.mediaPlayer?.setDataSource(AudioPlayer.musicListPA[AudioPlayer.songPosition].path)
             AudioPlayer.audioService!!.mediaPlayer?.prepare()
-            AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.baseline_pause_24)
-            AudioPlayer.audioService!!.showNotification(R.drawable.baseline_pause_24, 0F)
+            AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
+            AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 0F)
 
             AudioPlayer.binding.tvSeekBarStart.text =
                 convertToMMSS(mediaPlayer!!.currentPosition.toString())

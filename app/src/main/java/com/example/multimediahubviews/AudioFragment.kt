@@ -30,13 +30,12 @@ class AudioFragment : Fragment() {
         var musicListMA: ArrayList<AudioModel> = ArrayList()
     }
 
-    private var audioList: ArrayList<AudioModel> = ArrayList()
-    private lateinit var searchView: SearchView
     private lateinit var audioAdapter: AudioAdapter
-    private lateinit var sortOrder: String
-    private lateinit var recyclerView: RecyclerView
-    private var spanCount: Int = 1
     private lateinit var binding: FragmentAudioBinding
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
+    private lateinit var sortOrder: String
+    private var spanCount: Int = 1
 
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
@@ -44,32 +43,14 @@ class AudioFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_audio, container, false)
-        binding = FragmentAudioBinding.bind(view)
         setHasOptionsMenu(true)
 
+        binding = FragmentAudioBinding.bind(view)
         recyclerView = view.findViewById(R.id.recyclerView)
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
 
-        if (darkModeState) {
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
-            searchView = view.findViewById(R.id.search_view1)
-            binding.searchView2.visibility = View.GONE
-            binding.searchView1.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
-
-        }
-        else{
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
-            searchView = view.findViewById(R.id.search_view2)
-            binding.searchView2.visibility = View.VISIBLE
-            binding.searchView1.visibility = View.GONE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
-
-        }
+        if (darkModeState) setupDarkMode()
+        else setupLightMode()
 
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
         sortButton.setOnMenuItemClickListener {
@@ -93,8 +74,13 @@ class AudioFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             darkModeState = !darkModeState
-            if (darkModeState) lightMode()
-            else darkMode()
+            if (darkModeState) {
+                Toast.makeText(context, "Turning Off Dark Mode...", Toast.LENGTH_SHORT).show()
+                lightMode()
+            } else {
+                Toast.makeText(context, "Turning On Dark Mode...", Toast.LENGTH_SHORT).show()
+                darkMode()
+            }
             true
         }
 
@@ -116,20 +102,19 @@ class AudioFragment : Fragment() {
         return view
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        setUpView()
-    }
-
     private fun setUpView() {
         spanCount = if (isGridAudio) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.list_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
-        } else{
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+        } else {
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.grid_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(R.drawable.grid_icon_light)
             1
         }
         musicListMA = getAllAudios()
@@ -156,33 +141,28 @@ class AudioFragment : Fragment() {
 
         val cursor = contentResolver.query(audioUri, projection, null, null, sortOrder)
 
-        if (cursor != null)
-            if (cursor.moveToFirst())
-                do {
-                    val titleC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
-                    val sizeC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
-                    val pathC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
-                    val lastModifiedC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
-                    val durationC =
-                        cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
-                    val albumIdC =
-                        cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
-                            .toString()
-                    val uri = Uri.parse("content://media/external/audio/albumart")
-                    val artUriC = Uri.withAppendedPath(uri, albumIdC)
+        if (cursor != null) if (cursor.moveToFirst()) do {
+            val titleC =
+                cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+            val sizeC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE))
+            val pathC = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA))
+            val lastModifiedC =
+                cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_MODIFIED))
+            val durationC =
+                cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
+            val albumIdC =
+                cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID))
+                    .toString()
+            val uri = Uri.parse("content://media/external/audio/albumart")
+            val artUriC = Uri.withAppendedPath(uri, albumIdC)
 
-                    try {
-                        val file = File(pathC)
-                        val audio =
-                            AudioModel(pathC, titleC, durationC, sizeC, lastModifiedC, artUriC)
-                        if (file.exists()) tempList.add(audio)
-                    } catch (_: Exception) {
-                    }
-                } while (cursor.moveToNext())
+            try {
+                val file = File(pathC)
+                val audio = AudioModel(pathC, titleC, durationC, sizeC, lastModifiedC, artUriC)
+                if (file.exists()) tempList.add(audio)
+            } catch (_: Exception) {
+            }
+        } while (cursor.moveToNext())
         cursor?.close()
         return tempList
     }
@@ -216,7 +196,36 @@ class AudioFragment : Fragment() {
     }
 
     private fun updateAudioListAndAdapter() {
-        musicListMA = getAllAudios() // Get the sorted/filtered list
-        audioAdapter.filterList(musicListMA) // Update the adapter with the new list
+        musicListMA = getAllAudios()
+        audioAdapter.filterList(musicListMA)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun setupDarkMode(){
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
+        binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+        binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
+        searchView = requireView().findViewById(R.id.search_view1)
+        binding.searchView2.visibility = View.GONE
+        binding.searchView1.visibility = View.VISIBLE
+        binding.recyclerView.verticalScrollbarThumbDrawable =
+            ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun setupLightMode(){
+        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.light_mode_icon)
+        binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
+        binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_light)
+        searchView = requireView().findViewById(R.id.search_view2)
+        binding.searchView2.visibility = View.VISIBLE
+        binding.searchView1.visibility = View.GONE
+        binding.recyclerView.verticalScrollbarThumbDrawable =
+            ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_light, activity?.theme)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        setUpView()
     }
 }

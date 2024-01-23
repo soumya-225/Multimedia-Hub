@@ -3,12 +3,12 @@ package com.example.multimediahubviews
 import android.Manifest
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -16,10 +16,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.example.multimediahubviews.VideoPlayerActivity.Companion.position
 import com.example.multimediahubviews.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationBarView
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -28,7 +26,8 @@ import kotlin.system.exitProcess
 
 
 var darkModeState: Boolean = true
-private var isLaunched = true
+var isLaunched = true
+lateinit var bottomNav: BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,9 +35,10 @@ class MainActivity : AppCompatActivity() {
     val context = this
     private lateinit var pagerMain: ViewPager2
     private var fragmentArrList: ArrayList<Fragment> = ArrayList()
-    private lateinit var bottomNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setSupportActionBar(binding.topAppBar)
         setContentView(binding.root)
@@ -51,24 +51,33 @@ class MainActivity : AppCompatActivity() {
         fragmentArrList.add(AudioFragment())
         fragmentArrList.add(PdfFragment())
 
-        val adapterViewPager: AdapterViewPager = AdapterViewPager(this,fragmentArrList)
+        binding.root.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            binding.root.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = binding.root.rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+            bottomNav.visibility =
+                if (keypadHeight > screenHeight * 0.15) View.GONE else View.VISIBLE
+        }
+
+        val adapterViewPager = AdapterViewPager(this, fragmentArrList)
         pagerMain.adapter = adapterViewPager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+                pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
-                        when (position){
+                        when (position) {
                             0 -> bottomNav.selectedItemId = R.id.image
                             1 -> bottomNav.selectedItemId = R.id.video
                             2 -> bottomNav.selectedItemId = R.id.music
                             3 -> bottomNav.selectedItemId = R.id.pdf
                             else -> {}
                         }
-
                         super.onPageSelected(position)
                     }
                 })
+
                 bottomNav.setOnItemSelectedListener { item ->
                     when (item.itemId) {
                         R.id.image -> {
@@ -80,91 +89,25 @@ class MainActivity : AppCompatActivity() {
                             pagerMain.currentItem = 1
                             binding.nowPlaying.visibility = View.GONE
                         }
+
                         R.id.music -> {
                             pagerMain.currentItem = 2
                             binding.nowPlaying.visibility = View.VISIBLE
                         }
+
                         R.id.pdf -> {
                             pagerMain.currentItem = 3
                             binding.nowPlaying.visibility = View.GONE
                         }
+
                         else -> {}
                     }
                     true
                 }
-            }else{
+            } else {
                 requestStoragePermissions()
             }
         }
-
-
-
-
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-        if (Environment.isExternalStorageManager()) {
-
-
-            if (isLaunched) {
-                replaceFragment(ImageFragment())
-                isLaunched = false
-            }
-            binding.bottomNavigationView.setOnItemSelectedListener {
-                setFragment(it.itemId)
-                true
-            }
-        } else {
-            requestStoragePermissions()
-        }
-    }*/
-
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            binding.bottomNavigationView.visibility = View.GONE
-        } else {
-            binding.bottomNavigationView.visibility = View.VISIBLE
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (!AudioPlayer.isPlaying && AudioPlayer.audioService != null) {
-            AudioPlayer.audioService!!.stopForeground(true)
-            AudioPlayer.audioService!!.mediaPlayer!!.release()
-            AudioPlayer.audioService = null
-            exitProcess(1)
-        }
-    }
-
-    private fun setFragment(itemId: Int) {
-        when (itemId) {
-            R.id.image -> {
-                replaceFragment(ImageFragment())
-                binding.nowPlaying.visibility = View.GONE
-            }
-
-            R.id.video -> {
-                replaceFragment(VideoFragment())
-                binding.nowPlaying.visibility = View.GONE
-            }
-
-            R.id.music -> {
-                replaceFragment(AudioFragment())
-                binding.nowPlaying.visibility = View.VISIBLE
-            }
-
-            R.id.pdf -> {
-                replaceFragment(PdfFragment())
-                binding.nowPlaying.visibility = View.GONE
-            }
-
-            else -> {}
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.Frame_Layout, fragment)
-        fragmentTransaction.commit()
     }
 
     private fun requestStoragePermissions() {
@@ -192,6 +135,27 @@ class MainActivity : AppCompatActivity() {
             }
             .setCancelable(false)
             .show()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bottomNav.visibility = View.GONE
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        } else {
+            bottomNav.visibility = View.VISIBLE
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+        super.onConfigurationChanged(newConfig)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!AudioPlayer.isPlaying && AudioPlayer.audioService != null) {
+            AudioPlayer.audioService!!.stopForeground(true)
+            AudioPlayer.audioService!!.mediaPlayer!!.release()
+            AudioPlayer.audioService = null
+            exitProcess(1)
+        }
     }
 }
 

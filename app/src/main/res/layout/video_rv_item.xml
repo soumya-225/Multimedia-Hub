@@ -30,7 +30,7 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:contentDescription="@string/video_icon"
-                android:src="@drawable/play"
+                android:src="@drawable/video_thumbnail"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -107,7 +107,7 @@
                 android:baselineAlignBottom="true"
                 android:contentDescription="@string/video_thumbnail"
                 android:scaleType="fitCenter"
-                android:src="@drawable/play" />
+                android:src="@drawable/video_thumbnail" />
 
             <TextView
                 android:id="@+id/image_file_name"

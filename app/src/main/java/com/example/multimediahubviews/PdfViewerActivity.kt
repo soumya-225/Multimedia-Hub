@@ -38,8 +38,6 @@ class PdfViewerActivity : AppCompatActivity() {
         fileName = findViewById(R.id.file_name)
         scroll = findViewById(R.id.scrollButton)
         darkMode = findViewById(R.id.dark_pdf)
-
-
         getIntentData()
     }
 
@@ -70,11 +68,11 @@ class PdfViewerActivity : AppCompatActivity() {
             .load()
     }
 
-    private fun darkPdf(){
+    private fun darkPdf() {
         darkMode.setOnClickListener {
             dType = !dType
-            if (dType) darkMode.setImageResource(R.drawable.baseline_light_mode_24_dark)
-            else darkMode.setImageResource(R.drawable.baseline_dark_mode_24)
+            if (dType) darkMode.setImageResource(R.drawable.dark_mode_icon_dark)
+            else darkMode.setImageResource(R.drawable.night_mode_icon)
             showPdf()
         }
     }
@@ -86,8 +84,8 @@ class PdfViewerActivity : AppCompatActivity() {
     private fun scrollType() {
         scroll.setOnClickListener {
             sType = !sType
-            if (sType) scroll.setImageResource(R.drawable.baseline_swipe_vertical_24)
-            else scroll.setImageResource(R.drawable.baseline_swipe_24)
+            if (sType) scroll.setImageResource(R.drawable.swipe_vertical_icon)
+            else scroll.setImageResource(R.drawable.swipe_horizontal_icon)
             showPdf()
         }
     }

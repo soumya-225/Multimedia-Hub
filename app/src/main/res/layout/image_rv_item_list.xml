@@ -20,13 +20,13 @@
             android:padding="5dp">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/image_thumbnail"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:contentDescription="@string/image_thumbnail"
-                android:src="@drawable/photo_gallery"
+                android:src="@drawable/image_thumbnail"
                 app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.ExtraSmall" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

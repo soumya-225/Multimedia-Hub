@@ -64,6 +64,8 @@ dependencies {
     implementation ("com.google.android.exoplayer:exoplayer-ui:2.19.1")
 
     implementation("androidx.media:media:1.7.0")
+    implementation ("androidx.media:media:1.5.0")
+
 
 
 

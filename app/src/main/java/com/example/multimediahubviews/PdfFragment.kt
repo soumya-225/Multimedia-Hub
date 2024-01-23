@@ -50,24 +50,24 @@ class PdfFragment : Fragment() {
         sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
 
         if (darkModeState) {
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_dark_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(drawable.night_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(drawable.sort_icon_dark)
             searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon, activity?.theme)
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, drawable.scroll_icon_dark, activity?.theme)
 
 
         }
         else{
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.baseline_light_mode_24)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.baseline_sort_24_light)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(drawable.light_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(drawable.sort_icon_light)
             searchView = view.findViewById(R.id.search_view2)
             binding.searchView1.visibility = View.GONE
             binding.searchView2.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, drawable.scroll_icon_light, activity?.theme)
         }
 
 
@@ -91,8 +91,14 @@ class PdfFragment : Fragment() {
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             darkModeState = !darkModeState
-            if (darkModeState) lightMode()
-            else darkMode()
+            if (darkModeState) {
+                Toast.makeText(context,"Turning Off Dark Mode...",Toast.LENGTH_SHORT).show()
+                lightMode()
+            }
+            else {
+                Toast.makeText(context,"Turning On Dark Mode...",Toast.LENGTH_SHORT).show()
+                darkMode()
+            }
             true
         }
 
@@ -117,19 +123,44 @@ class PdfFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridPdf) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_view_list_24_light)
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24)
-            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.baseline_grid_view_24_light)
+            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
+            else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_light)
             1
         }
         recyclerView.layoutManager = GridLayoutManager(context, spanCount)
         pdfAdapter = PdfAdapter(pdfList, requireActivity())
         recyclerView.adapter = pdfAdapter
         pdfAdapter.filterList(getAllFiles())
+    }
+
+    private fun getAllFiles(): List<File> {
+        val uri = MediaStore.Files.getContentUri("external")
+        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
+        val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
+        val selectionArgs = arrayOf("application/pdf")
+        val cursor: Cursor? =
+            context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
+        val list = arrayListOf<File>()
+        val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                if (pdfPathIndex != -1) {
+                    val pdfPath = cursor.getString(pdfPathIndex!!)
+                    val pdfFile = File(pdfPath)
+                    if (pdfFile.exists() && pdfFile.isFile) {
+                        list.add(pdfFile)
+                    }
+                }
+            }
+        }
+        cursor?.close()
+        return list
     }
 
     private fun setUpSearch() {
@@ -158,31 +189,6 @@ class PdfFragment : Fragment() {
             }
         }
         pdfAdapter.filterList(list1)
-    }
-
-    private fun getAllFiles(): List<File> {
-        val uri = MediaStore.Files.getContentUri("external")
-        val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-        val selection = MediaStore.Files.FileColumns.MIME_TYPE + "=?"
-        val selectionArgs = arrayOf("application/pdf")
-        val cursor: Cursor? =
-            context?.contentResolver?.query(uri, projection, selection, selectionArgs, sortOrder)
-        val list = arrayListOf<File>()
-        val pdfPathIndex = cursor?.getColumnIndex(MediaStore.Files.FileColumns.DATA)
-
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                if (pdfPathIndex != -1) {
-                    val pdfPath = cursor.getString(pdfPathIndex!!)
-                    val pdfFile = File(pdfPath)
-                    if (pdfFile.exists() && pdfFile.isFile) {
-                        list.add(pdfFile)
-                    }
-                }
-            }
-        }
-        cursor?.close()
-        return list
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

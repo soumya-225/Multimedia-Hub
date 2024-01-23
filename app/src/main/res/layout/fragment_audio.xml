@@ -29,7 +29,7 @@
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Search Music..."
-                android:searchIcon="@drawable/baseline_search_24" />
+                android:searchIcon="@drawable/search_icon_dark" />
 
             <android.widget.SearchView
                 android:id="@+id/search_view2"
@@ -39,7 +39,7 @@
                 android:iconifiedByDefault="false"
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Search Music..."
-                android:searchIcon="@drawable/baseline_search_24_light" />
+                android:searchIcon="@drawable/search_icon_light" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -49,7 +49,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbarThumbVertical="@drawable/scroll_icon"
+        android:scrollbarThumbVertical="@drawable/scroll_icon_dark"
         android:scrollbars="vertical" />
 
 

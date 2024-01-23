@@ -39,12 +39,11 @@ class VideoPlayerActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-        window.attributes.layoutInDisplayCutoutMode =
-            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         binding = ActivityPlayerBinding.inflate(layoutInflater)
 
-        //for immersive mode
         setTheme(R.style.playerActivityTheme)
         setContentView(binding.root)
 
@@ -55,7 +54,6 @@ class VideoPlayerActivity : AppCompatActivity() {
             //WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
 
-        //for handling video file intent
         try {
             if (intent.data?.scheme.contentEquals("content")) {
                 playerList = ArrayList()
@@ -108,17 +106,21 @@ class VideoPlayerActivity : AppCompatActivity() {
         binding.backBtn.setOnClickListener {
             finish()
         }
+
         binding.playPauseBtn.setOnClickListener {
             if (player.isPlaying) pauseVideo()
             else playVideo()
 
         }
+
         binding.nextBtn.setOnClickListener {
             nextPrevVideo()
         }
+
         binding.prevBtn.setOnClickListener {
             nextPrevVideo(isNext = false)
         }
+
         binding.repeatBtn.setOnClickListener {
             if (repeat) {
                 repeat = false
@@ -130,6 +132,7 @@ class VideoPlayerActivity : AppCompatActivity() {
                 binding.repeatBtn.setImageResource(com.google.android.exoplayer2.ui.R.drawable.exo_controls_repeat_all)
             }
         }
+
         binding.fullScreenBtn.setOnClickListener {
             if (isFullscreen) {
                 isFullscreen = false
@@ -139,17 +142,18 @@ class VideoPlayerActivity : AppCompatActivity() {
                 playInFullScreen(enable = true)
             }
         }
+
         binding.lockBtn.setOnClickListener {
             if (!isLocked) {
                 isLocked = true
                 binding.playerView.hideController()
                 binding.playerView.useController = false
-                binding.lockBtn.setImageResource(R.drawable.baseline_lock_24)
+                binding.lockBtn.setImageResource(R.drawable.lock_icon)
             } else {
                 isLocked = false
                 binding.playerView.hideController()
                 binding.playerView.useController = true
-                binding.lockBtn.setImageResource(R.drawable.baseline_lock_open_24)
+                binding.lockBtn.setImageResource(R.drawable.lock_open_icon)
             }
         }
 
@@ -166,6 +170,7 @@ class VideoPlayerActivity : AppCompatActivity() {
             player.release()
         } catch (_: Exception) {
         }
+
         player = SimpleExoPlayer.Builder(this).build()
         binding.playerView.player = player
         binding.videoTitle.text = playerList[position].title
@@ -187,12 +192,12 @@ class VideoPlayerActivity : AppCompatActivity() {
     }
 
     private fun playVideo() {
-        binding.playPauseBtn.setImageResource(R.drawable.baseline_pause_24)
+        binding.playPauseBtn.setImageResource(R.drawable.pause_icon_dark)
         player.play()
     }
 
     private fun pauseVideo() {
-        binding.playPauseBtn.setImageResource(R.drawable.baseline_play_arrow_24)
+        binding.playPauseBtn.setImageResource(R.drawable.play_icon_dark)
         player.pause()
     }
 
@@ -220,7 +225,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         if (enable) {
             binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
             player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
-            binding.fullScreenBtn.setImageResource(R.drawable.baseline_fullscreen_exit_24)
+            binding.fullScreenBtn.setImageResource(R.drawable.fullscreen_exit_icon)
             WindowCompat.setDecorFitsSystemWindows(window, false)
             WindowInsetsControllerCompat(window, binding.root).let { controller ->
                 controller.hide(WindowInsetsCompat.Type.navigationBars())
@@ -230,7 +235,7 @@ class VideoPlayerActivity : AppCompatActivity() {
         } else {
             binding.playerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
             player.videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT
-            binding.fullScreenBtn.setImageResource(R.drawable.baseline_fullscreen_24)
+            binding.fullScreenBtn.setImageResource(R.drawable.fullscreen_icon)
             WindowCompat.setDecorFitsSystemWindows(window, true)
             WindowInsetsControllerCompat(window, binding.root).let { controller ->
                 controller.show(WindowInsetsCompat.Type.navigationBars())
