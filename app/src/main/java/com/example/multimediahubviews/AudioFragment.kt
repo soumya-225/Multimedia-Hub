@@ -53,7 +53,7 @@ class AudioFragment : Fragment() {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
-            searchView = requireView().findViewById(R.id.search_view1)
+            searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
             binding.recyclerView.verticalScrollbarThumbDrawable =
@@ -63,7 +63,7 @@ class AudioFragment : Fragment() {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
-            searchView = requireView().findViewById(R.id.search_view1)
+            searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
             binding.recyclerView.verticalScrollbarThumbDrawable =
