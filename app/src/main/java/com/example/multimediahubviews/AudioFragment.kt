@@ -49,8 +49,26 @@ class AudioFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
 
-        if (darkModeState) setupDarkMode()
-        else setupLightMode()
+        if (darkModeState) {
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
+            searchView = requireView().findViewById(R.id.search_view1)
+            binding.searchView2.visibility = View.GONE
+            binding.searchView1.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable =
+                ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+        }
+        else{
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
+            searchView = requireView().findViewById(R.id.search_view1)
+            binding.searchView2.visibility = View.GONE
+            binding.searchView1.visibility = View.VISIBLE
+            binding.recyclerView.verticalScrollbarThumbDrawable =
+                ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+        }
 
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
         sortButton.setOnMenuItemClickListener {
@@ -198,30 +216,6 @@ class AudioFragment : Fragment() {
     private fun updateAudioListAndAdapter() {
         musicListMA = getAllAudios()
         audioAdapter.filterList(musicListMA)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun setupDarkMode(){
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
-        binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
-        binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
-        searchView = requireView().findViewById(R.id.search_view1)
-        binding.searchView2.visibility = View.GONE
-        binding.searchView1.visibility = View.VISIBLE
-        binding.recyclerView.verticalScrollbarThumbDrawable =
-            ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
-    }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    private fun setupLightMode(){
-        binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.light_mode_icon)
-        binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
-        binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_light)
-        searchView = requireView().findViewById(R.id.search_view2)
-        binding.searchView2.visibility = View.VISIBLE
-        binding.searchView1.visibility = View.GONE
-        binding.recyclerView.verticalScrollbarThumbDrawable =
-            ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_light, activity?.theme)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
