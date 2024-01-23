@@ -49,5 +49,5 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/fullscreen_image_content_description"
         android:scaleType="fitCenter"
-        android:src="" />
+        android:src="@drawable/image_thumbnail" />
 </LinearLayout>
