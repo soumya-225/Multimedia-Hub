@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -36,8 +37,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pagerMain: ViewPager2
     private var fragmentArrList: ArrayList<Fragment> = ArrayList()
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        darkModeState = !resources.configuration.isNightModeActive
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setSupportActionBar(binding.topAppBar)
@@ -57,7 +61,12 @@ class MainActivity : AppCompatActivity() {
             val screenHeight = binding.root.rootView.height
             val keypadHeight = screenHeight - rect.bottom
             bottomNav.visibility =
-                if (keypadHeight > screenHeight * 0.15) View.GONE else View.VISIBLE
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ||
+                    (keypadHeight > screenHeight * 0.15)
+                )
+                    View.GONE
+                else
+                    View.VISIBLE
         }
 
         val adapterViewPager = AdapterViewPager(this, fragmentArrList)

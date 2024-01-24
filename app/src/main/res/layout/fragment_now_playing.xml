@@ -6,18 +6,13 @@
     android:layout_height="wrap_content"
     tools:context=".AudioNowPlaying">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/black" />
-
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/songImgNP"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginHorizontal="10dp"
         android:padding="5dp"
-        android:src="@drawable/audio_thumnail"
+        android:src="@drawable/audio_thumbnail"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
     <ImageView
@@ -53,12 +48,8 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
         android:text=""
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_alignBottom="@id/songImgNP"
-        android:background="@color/black" />
 </RelativeLayout>

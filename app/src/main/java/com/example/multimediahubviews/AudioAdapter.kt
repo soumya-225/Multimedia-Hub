@@ -55,7 +55,7 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
         Glide.with(context)
             .asBitmap()
             .load(songsList[position].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).centerCrop())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).centerCrop())
             .into(holder.thumbnailImageView)
 
         setAnimation(holder.itemView, position)

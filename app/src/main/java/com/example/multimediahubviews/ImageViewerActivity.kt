@@ -1,9 +1,11 @@
 package com.example.multimediahubviews
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -118,5 +120,14 @@ class ImageViewerActivity : AppCompatActivity() {
 
     private fun back() {
         back.setOnClickListener {finish()}
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+        super.onConfigurationChanged(newConfig)
     }
 }

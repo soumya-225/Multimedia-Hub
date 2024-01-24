@@ -114,7 +114,7 @@ class PdfFragment : Fragment() {
         pdfAdapter = PdfAdapter(pdfList, requireActivity())
         recyclerView.adapter = pdfAdapter
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.setHasFixedSize(true)
+        //recyclerView.setHasFixedSize(true)
 
         getAllFiles()
         setUpView()

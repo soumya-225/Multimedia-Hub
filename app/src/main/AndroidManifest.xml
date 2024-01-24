@@ -50,11 +50,13 @@
 
         <activity
             android:name=".ImageViewerActivity"
-            android:exported="false" />
+            android:configChanges="uiMode|orientation|screenSize|screenLayout"
+            android:exported="true" />
 
         <activity
             android:name=".PdfViewerActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="uiMode|orientation|screenSize|screenLayout">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>

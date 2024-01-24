@@ -1,6 +1,10 @@
 package com.example.multimediahubviews
 
+import android.content.Intent
+import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -57,7 +61,13 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun showPdf() {
         pdfView
-            .fromFile(File(path))
+            .fromUri(
+                if (intent.action == Intent.ACTION_VIEW) intent?.data else Uri.fromFile(
+                    File(
+                        path
+                    )
+                )
+            )
             .nightMode(false)
             .swipeHorizontal(sType)
             .defaultPage(0)
@@ -97,7 +107,7 @@ class PdfViewerActivity : AppCompatActivity() {
         if (nameExtra != null && pathExtra != null) {
             fileName.text = nameExtra
             path = pathExtra
-        } else {
+        } else if (intent?.action != Intent.ACTION_VIEW) {
             Toast.makeText(this, "Error: Data not available", Toast.LENGTH_SHORT).show()
             finish()
         }
@@ -107,6 +117,17 @@ class PdfViewerActivity : AppCompatActivity() {
         darkPdf()
         fullscreen()
         showPdf()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        Log.d("PdfTag", "Orientation Changed")
+
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+        super.onConfigurationChanged(newConfig)
     }
 
 }

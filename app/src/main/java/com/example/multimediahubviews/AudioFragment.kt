@@ -60,14 +60,14 @@ class AudioFragment : Fragment() {
                 ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
         }
         else{
-            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
-            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
-            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
+            binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.light_mode_icon)
+            binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
+            binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_light)
             searchView = view.findViewById(R.id.search_view1)
-            binding.searchView2.visibility = View.GONE
-            binding.searchView1.visibility = View.VISIBLE
+            binding.searchView1.visibility = View.GONE
+            binding.searchView2.visibility = View.VISIBLE
             binding.recyclerView.verticalScrollbarThumbDrawable =
-                ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_dark, activity?.theme)
+                ResourcesCompat.getDrawable(resources, R.drawable.scroll_icon_light, activity?.theme)
         }
 
         val sortButton = binding.topAppBar.menu.findItem(R.id.sort_switch)
@@ -111,7 +111,7 @@ class AudioFragment : Fragment() {
         setUpSearch()
         musicListMA = getAllAudios()
         audioAdapter = AudioAdapter(musicListMA, requireContext())
-        binding.recyclerView.setHasFixedSize(true)
+        //binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = audioAdapter

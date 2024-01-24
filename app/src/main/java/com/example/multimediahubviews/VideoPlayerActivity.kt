@@ -1,6 +1,7 @@
 package com.example.multimediahubviews
 
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -259,6 +260,15 @@ class VideoPlayerActivity : AppCompatActivity() {
         binding.playPauseBtn.visibility = visibility
         if (isLocked) binding.lockBtn.visibility = View.VISIBLE
         else binding.lockBtn.visibility = visibility
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        }
+        super.onConfigurationChanged(newConfig)
     }
 
     override fun onDestroy() {

@@ -45,7 +45,7 @@ class AudioNotificationReceiver : BroadcastReceiver() {
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).fitCenter())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).fitCenter())
             .into(AudioNowPlaying.binding.songImgNP)
 
         AudioNowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
@@ -53,7 +53,7 @@ class AudioNotificationReceiver : BroadcastReceiver() {
         Glide.with(context)
             .asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.audio_thumnail).fitCenter())
+            .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).fitCenter())
             .into(AudioPlayer.binding.songImgPA)
 
         AudioPlayer.binding.songNamePA.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title

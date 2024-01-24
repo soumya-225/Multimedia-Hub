@@ -39,8 +39,6 @@ class ImageFragment : Fragment() {
     private var spanCount = 1
 
 
-
-
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
@@ -117,7 +115,7 @@ class ImageFragment : Fragment() {
         setUpSearch(searchView)
         imageList = getAllImages2()
         imageAdapter = ImageAdapter(imageList,requireContext())
-        binding.recyclerView.setHasFixedSize(true)
+        //binding.recyclerView.setHasFixedSize(true)
         binding.recyclerView.setItemViewCacheSize(10)
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = imageAdapter
@@ -211,10 +209,5 @@ class ImageFragment : Fragment() {
             }
         }
         imageAdapter.filterList(list1)
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        setupView()
     }
 }
