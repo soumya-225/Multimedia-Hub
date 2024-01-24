@@ -39,7 +39,9 @@
                 android:text=""
                 android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:singleLine="true"
+                android:ellipsize="end"/>
 
             <ImageView
                 android:id="@+id/dark_pdf"
