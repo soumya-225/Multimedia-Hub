@@ -8,7 +8,6 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <!--    First Row-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +15,6 @@
         android:gravity="center"
         android:layout_weight="1">
 
-        <!--    Back Button-->
         <ImageButton
             android:id="@+id/backBtnPA"
             android:layout_width="50dp"
@@ -24,20 +22,19 @@
             android:src="@drawable/back_icon_ios_dark"
             android:background="?attr/selectableItemBackground"
             android:layout_marginStart="5dp"
-            android:contentDescription="Back Button"
+            android:contentDescription="@string/back_button"
             android:padding="10dp" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="Mutlimedia Hub"
+            android:text="@string/mutlimedia_hub"
             android:textSize="20sp"
             android:gravity="center"
             android:layout_weight="1"
             tools:ignore="NestedWeights"
             android:textStyle="bold"/>
 
-        <!--        Favourite Button-->
         <ImageButton
             android:id="@+id/favouriteBtnPA"
             android:layout_width="50dp"
@@ -45,12 +42,11 @@
             android:src="@drawable/skip_next_icon"
             android:background="?attr/selectableItemBackground"
             android:layout_marginEnd="20dp"
-            android:contentDescription="Fav Button"
+            android:contentDescription="@string/fav_button"
             app:tint="@android:color/holo_red_dark"
             android:visibility="invisible"/>
     </LinearLayout>
 
-    <!--    Current Song Image-->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/songImgPA"
         android:layout_width="250dp"
@@ -62,19 +58,18 @@
         app:strokeColor="@color/cool_blue"
         app:strokeWidth="0dp"/>
 
-    <!--    Current Song Name-->
     <TextView
         android:id="@+id/songNamePA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:text="Song Name"
+        android:text=""
         android:textSize="18sp"
         android:gravity="center"
         android:layout_weight="1"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:contentDescription="@string/name"/>
 
-    <!--    Floating Buttons for Previous, Pause & Next-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,7 +78,6 @@
         android:gravity="center"
         android:layout_weight="1">
 
-        <!--        Previous Button-->
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/previousBtnPA"
             android:layout_width="wrap_content"
@@ -91,9 +85,9 @@
             app:icon="@drawable/skip_previous_icon"
             android:backgroundTint="@color/teal_200"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:iconSize="40dp"/>
+            app:iconSize="40dp"
+            android:contentDescription="@string/previous_button"/>
 
-        <!--        Play & Pause Button-->
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/playPauseBtnPA"
             android:layout_width="wrap_content"
@@ -103,9 +97,9 @@
             android:layout_marginHorizontal="25dp"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
             android:backgroundTint="@android:color/holo_red_light"
-            app:iconTint="@color/white"/>
+            app:iconTint="@color/white"
+            android:contentDescription="@string/play_pause_button"/>
 
-        <!--        Next Button-->
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/nextBtnPA"
             android:layout_width="wrap_content"
@@ -113,11 +107,11 @@
             app:icon="@drawable/skip_next_icon"
             android:backgroundTint="@color/teal_200"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full"
-            app:iconSize="40dp"/>
+            app:iconSize="40dp"
+            android:contentDescription="@string/next_button"/>
 
     </LinearLayout>
 
-    <!--    Seekbar & TextViews for it-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="25dp"
@@ -130,7 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="15sp"
-            android:text="00:00"
+            android:text="@string/start_time"
             android:gravity="center"/>
 
         <androidx.appcompat.widget.AppCompatSeekBar
@@ -147,73 +141,46 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textSize="15sp"
-            android:text="Loading..."
+            android:text="@string/loading"
             android:gravity="center"/>
     </LinearLayout>
 
-    <!--    Last Row for Various Player Options-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:layout_weight="1">
 
-        <!--        Repeat Button-->
         <ImageButton
             android:id="@+id/repeatBtnPA"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@drawable/repeat_icon_dark"
             android:background="?attr/selectableItemBackground"
-            android:contentDescription="Repeat Button"
+            android:contentDescription="@string/repeat_button"
             android:layout_weight="1"
             tools:ignore="NestedWeights"
             app:tint="@color/cool_pink" />
 
-        <!--        Equalizer Button-->
         <ImageButton
             android:id="@+id/equalizerBtnPA"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@drawable/equalizer_icon"
             android:background="?attr/selectableItemBackground"
-            android:contentDescription="Equalizer Button"
+            android:contentDescription="@string/equalizer_button"
             android:layout_weight="1"
             app:tint="@color/cool_pink" />
 
-        <!--        Timer Button-->
-        <!--<ImageButton
-            android:id="@+id/timerBtnPA"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_timer_24"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="Timer Button"
-            android:layout_weight="1"
-            app:tint="@color/cool_pink" />-->
-
-        <!--        Share Button-->
         <ImageButton
             android:id="@+id/shareBtnPA"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:src="@drawable/share_icon"
             android:background="?attr/selectableItemBackground"
-            android:contentDescription="Share Button"
+            android:contentDescription="@string/share_button"
             android:layout_weight="1"
             app:tint="@color/cool_pink" />
-
-
-        <!--       Volume Button-->
-        <!--<ImageButton
-            android:id="@+id/boosterBtnPA"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:src="@drawable/baseline_volume_up_24"
-            android:background="?attr/selectableItemBackground"
-            android:contentDescription="Volume Button"
-            android:layout_weight="1"
-            app:tint="@color/cool_pink" />-->
 
     </LinearLayout>
 

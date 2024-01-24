@@ -46,7 +46,7 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         Glide.with(context)
             .load(imageList[position].path)
-            .apply(RequestOptions().placeholder(R.drawable.image_thumbnail).centerCrop())
+            .apply(RequestOptions().centerCrop())
             .into(holder.thumbnailImageView)
 
         val imageModel: ImageModel = imageList[position]

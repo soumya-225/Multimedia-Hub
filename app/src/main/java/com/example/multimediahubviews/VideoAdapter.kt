@@ -54,7 +54,7 @@ class VideoAdapter(private val context: Context, private var videoList: List<Vid
         Glide.with(context)
             .asBitmap()
             .load(videoList[position].artUri)
-            .apply(RequestOptions().placeholder(R.drawable.video_thumbnail).centerCrop())
+            .apply(RequestOptions().centerCrop())
             .into(thumbnail)
 
         setAnimation(holder.itemView,position)

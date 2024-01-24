@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -61,13 +62,7 @@ class PdfViewerActivity : AppCompatActivity() {
 
     private fun showPdf() {
         pdfView
-            .fromUri(
-                if (intent.action == Intent.ACTION_VIEW) intent?.data else Uri.fromFile(
-                    File(
-                        path
-                    )
-                )
-            )
+            .fromUri(if (intent.action == Intent.ACTION_VIEW) intent?.data else Uri.fromFile(File(path)))
             .nightMode(false)
             .swipeHorizontal(sType)
             .defaultPage(0)
@@ -103,6 +98,22 @@ class PdfViewerActivity : AppCompatActivity() {
     private fun getIntentData() {
         val nameExtra = intent.getStringExtra("name")
         val pathExtra = intent.getStringExtra("path")
+
+        if (intent.data?.scheme.contentEquals("content")) {
+            val cursor = contentResolver.query(
+                intent.data!!,
+                arrayOf(MediaStore.Files.FileColumns.DISPLAY_NAME),
+                null,
+                null,
+                null
+            )
+            cursor?.let {
+                it.moveToFirst()
+                val fileNamePdf = it.getString(it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DISPLAY_NAME))
+                fileName.text = fileNamePdf
+                cursor.close()
+            }
+        }
 
         if (nameExtra != null && pathExtra != null) {
             fileName.text = nameExtra
