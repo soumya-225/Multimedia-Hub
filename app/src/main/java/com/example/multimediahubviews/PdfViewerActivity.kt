@@ -2,7 +2,9 @@ package com.example.multimediahubviews
 
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -10,6 +12,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.github.barteksc.pdfviewer.PDFView
@@ -30,12 +33,14 @@ class PdfViewerActivity : AppCompatActivity() {
     private var dType: Boolean = false
     private lateinit var darkMode: ImageView
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pdf_viewer)
         initVar()
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     private fun initVar() {
         pdfView = findViewById(R.id.pdfView)
         toolbar = findViewById(R.id.toolbar)

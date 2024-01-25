@@ -52,7 +52,7 @@ class ImageFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         list = ArrayList()
 
-        if (darkModeState) {
+        if (notDarkModeState) {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
@@ -72,8 +72,8 @@ class ImageFragment : Fragment() {
         }
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
-            darkModeState = !darkModeState
-            if (darkModeState) {
+            notDarkModeState = !notDarkModeState
+            if (notDarkModeState) {
                 Toast.makeText(context,"Turning Off Dark Mode...",Toast.LENGTH_SHORT).show()
                 lightMode()
             }
@@ -124,12 +124,12 @@ class ImageFragment : Fragment() {
 
     private fun setupView() {
         spanCount = if (isGridImage) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.list_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.list_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_light)
             1
 

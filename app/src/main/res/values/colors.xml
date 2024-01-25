@@ -141,5 +141,7 @@
     <color name="md_theme_dark_outlineVariant">#3F484B</color>
     <color name="md_theme_dark_scrim">#000000</color>
 
+    <color name="PdfToolbarColor">#15000000</color>
+
 
 </resources>

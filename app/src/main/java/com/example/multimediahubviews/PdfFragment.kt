@@ -49,7 +49,7 @@ class PdfFragment : Fragment() {
         pdfList = arrayListOf()
         sortOrder = MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC"
 
-        if (darkModeState) {
+        if (notDarkModeState) {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(drawable.night_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(drawable.sort_icon_dark)
@@ -90,8 +90,8 @@ class PdfFragment : Fragment() {
         }
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
-            darkModeState = !darkModeState
-            if (darkModeState) {
+            notDarkModeState = !notDarkModeState
+            if (notDarkModeState) {
                 Toast.makeText(context,"Turning Off Dark Mode...",Toast.LENGTH_SHORT).show()
                 lightMode()
             }
@@ -123,12 +123,12 @@ class PdfFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridPdf) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_light)
             1
         }

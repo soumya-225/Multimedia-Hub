@@ -49,7 +49,7 @@ class AudioFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         sortOrder = MediaStore.Video.Media.DATE_MODIFIED + " DESC"
 
-        if (darkModeState) {
+        if (notDarkModeState) {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(R.drawable.night_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(R.drawable.grid_icon_dark)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(R.drawable.sort_icon_dark)
@@ -91,8 +91,8 @@ class AudioFragment : Fragment() {
         }
 
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
-            darkModeState = !darkModeState
-            if (darkModeState) {
+            notDarkModeState = !notDarkModeState
+            if (notDarkModeState) {
                 Toast.makeText(context, "Turning Off Dark Mode...", Toast.LENGTH_SHORT).show()
                 lightMode()
             } else {
@@ -122,14 +122,14 @@ class AudioFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridAudio) {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
                 .setIcon(R.drawable.list_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch)
                 .setIcon(R.drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else {
-            if (darkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
                 .setIcon(R.drawable.grid_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch)
                 .setIcon(R.drawable.grid_icon_light)

@@ -26,9 +26,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 
-var darkModeState: Boolean = true
-var isLaunched = true
-lateinit var bottomNav: BottomNavigationView
+var notDarkModeState: Boolean = true
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,20 +34,21 @@ class MainActivity : AppCompatActivity() {
     val context = this
     private lateinit var pagerMain: ViewPager2
     private var fragmentArrList: ArrayList<Fragment> = ArrayList()
+    lateinit var bottomNav: BottomNavigationView
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        darkModeState = !resources.configuration.isNightModeActive
+        notDarkModeState = !resources.configuration.isNightModeActive
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setSupportActionBar(binding.topAppBar)
         setContentView(binding.root)
 
         bottomNav = findViewById(R.id.bottomNavigationView)
-
         pagerMain = findViewById(R.id.pagerMain)
+
         fragmentArrList.add(ImageFragment())
         fragmentArrList.add(VideoFragment())
         fragmentArrList.add(AudioFragment())
@@ -74,48 +73,52 @@ class MainActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             if (Environment.isExternalStorageManager()) {
-                pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                    override fun onPageSelected(position: Int) {
-                        when (position) {
-                            0 -> bottomNav.selectedItemId = R.id.image
-                            1 -> bottomNav.selectedItemId = R.id.video
-                            2 -> bottomNav.selectedItemId = R.id.music
-                            3 -> bottomNav.selectedItemId = R.id.pdf
-                            else -> {}
-                        }
-                        super.onPageSelected(position)
-                    }
-                })
-
-                bottomNav.setOnItemSelectedListener { item ->
-                    when (item.itemId) {
-                        R.id.image -> {
-                            pagerMain.currentItem = 0
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        R.id.video -> {
-                            pagerMain.currentItem = 1
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        R.id.music -> {
-                            pagerMain.currentItem = 2
-                            binding.nowPlaying.visibility = View.VISIBLE
-                        }
-
-                        R.id.pdf -> {
-                            pagerMain.currentItem = 3
-                            binding.nowPlaying.visibility = View.GONE
-                        }
-
-                        else -> {}
-                    }
-                    true
-                }
+                onPermissionGranted()
             } else {
                 requestStoragePermissions()
             }
+        }
+    }
+
+    private fun onPermissionGranted(){
+        pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> bottomNav.selectedItemId = R.id.image
+                    1 -> bottomNav.selectedItemId = R.id.video
+                    2 -> bottomNav.selectedItemId = R.id.music
+                    3 -> bottomNav.selectedItemId = R.id.pdf
+                    else -> {}
+                }
+                super.onPageSelected(position)
+            }
+        })
+
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.image -> {
+                    pagerMain.currentItem = 0
+                    binding.nowPlaying.visibility = View.GONE
+                }
+
+                R.id.video -> {
+                    pagerMain.currentItem = 1
+                    binding.nowPlaying.visibility = View.GONE
+                }
+
+                R.id.music -> {
+                    pagerMain.currentItem = 2
+                    binding.nowPlaying.visibility = View.VISIBLE
+                }
+
+                R.id.pdf -> {
+                    pagerMain.currentItem = 3
+                    binding.nowPlaying.visibility = View.GONE
+                }
+
+                else -> {}
+            }
+            true
         }
     }
 
@@ -135,15 +138,16 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
-                Toast.makeText(
-                    this,
-                    "The application cannot work without storage permission",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "The application cannot work without storage permission", Toast.LENGTH_SHORT).show()
                 finish()
             }
             .setCancelable(false)
             .show()
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        recreate()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
