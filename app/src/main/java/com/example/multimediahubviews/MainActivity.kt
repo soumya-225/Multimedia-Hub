@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var pagerMain: ViewPager2
     private var fragmentArrList: ArrayList<Fragment> = ArrayList()
     lateinit var bottomNav: BottomNavigationView
+    private var isPermissionGranted: Boolean = false
+    private var isPermissionGrantedOnResume: Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +50,7 @@ class MainActivity : AppCompatActivity() {
 
         bottomNav = findViewById(R.id.bottomNavigationView)
         pagerMain = findViewById(R.id.pagerMain)
+        isPermissionGranted = Environment.isExternalStorageManager()
 
         fragmentArrList.add(ImageFragment())
         fragmentArrList.add(VideoFragment())
@@ -71,8 +74,10 @@ class MainActivity : AppCompatActivity() {
         val adapterViewPager = AdapterViewPager(this, fragmentArrList)
         pagerMain.adapter = adapterViewPager
 
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            if (Environment.isExternalStorageManager()) {
+            if (isPermissionGranted) {
                 onPermissionGranted()
             } else {
                 requestStoragePermissions()
@@ -145,9 +150,12 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
-    override fun onRestart() {
-        super.onRestart()
-        recreate()
+    @RequiresApi(Build.VERSION_CODES.R)
+    override fun onResume() {
+        super.onResume()
+        isPermissionGrantedOnResume = Environment.isExternalStorageManager()
+        if (isPermissionGranted != isPermissionGrantedOnResume)
+            recreate()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
