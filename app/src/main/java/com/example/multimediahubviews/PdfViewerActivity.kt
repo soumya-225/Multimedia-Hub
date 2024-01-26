@@ -136,8 +136,6 @@ class PdfViewerActivity : AppCompatActivity() {
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
-        Log.d("PdfTag", "Orientation Changed")
-
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN
         } else {

@@ -30,6 +30,7 @@ class ImageViewerActivity : AppCompatActivity() {
         fullImage = findViewById(R.id.fullImage)
         fileName = findViewById(R.id.image_name)
         back = findViewById(R.id.backBtn)
+
         val intent: Intent = intent
         image = intent.getStringExtra("parseData")!!
         title = intent.getStringExtra("fileName")!!
