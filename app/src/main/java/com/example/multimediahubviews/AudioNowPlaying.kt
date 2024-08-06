@@ -23,8 +23,7 @@ class AudioNowPlaying : Fragment() {
     private var isNowPlaying: Boolean = AudioPlayer.isPlaying
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_now_playing, container, false)
 
@@ -41,14 +40,13 @@ class AudioNowPlaying : Fragment() {
             setSongPosition(true)
             AudioPlayer.audioService!!.createMediaPlayer()
 
-            Glide.with(this)
-                .asBitmap()
+            Glide.with(this).asBitmap()
                 .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
                 .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
                 .into(binding.songImgNP)
 
             binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
-            AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+            AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark)
             playMusic()
 
         }
@@ -73,8 +71,7 @@ class AudioNowPlaying : Fragment() {
             binding.root.visibility = View.VISIBLE
             binding.songNameNP.isSelected = true
 
-            Glide.with(this)
-                .asBitmap()
+            Glide.with(this).asBitmap()
                 .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
                 .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
                 .into(binding.songImgNP)
@@ -89,7 +86,7 @@ class AudioNowPlaying : Fragment() {
     private fun playMusic() {
         AudioPlayer.audioService!!.mediaPlayer!!.start()
         binding.playPauseBtnNP.setImageResource(R.drawable.pause_icon_dark)
-        AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.pause_icon_dark)
         AudioPlayer.isPlaying = true
     }
@@ -97,7 +94,7 @@ class AudioNowPlaying : Fragment() {
     private fun pauseMusic() {
         AudioPlayer.audioService!!.mediaPlayer!!.pause()
         binding.playPauseBtnNP.setImageResource(R.drawable.play_icon_dark)
-        AudioPlayer.audioService!!.showNotification(R.drawable.play_icon_dark, 0F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.play_icon_dark)
         AudioPlayer.binding.nextBtnPA.setIconResource(R.drawable.play_icon_dark)
         AudioPlayer.isPlaying = true
     }

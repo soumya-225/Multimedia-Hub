@@ -24,17 +24,10 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
     private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var titleTextView: TextView
-        var sizeTextView: TextView
-        var lastModifiedTextView: TextView
-        var thumbnailImageView: ImageView
-
-        init {
-            titleTextView = itemView.findViewById(R.id.file_name)
-            sizeTextView = itemView.findViewById(R.id.file_size)
-            lastModifiedTextView = itemView.findViewById(R.id.last_modified)
-            thumbnailImageView = itemView.findViewById(R.id.thumbnail)
-        }
+        var titleTextView: TextView = itemView.findViewById(R.id.file_name)
+        var sizeTextView: TextView = itemView.findViewById(R.id.file_size)
+        var lastModifiedTextView: TextView = itemView.findViewById(R.id.last_modified)
+        var thumbnailImageView: ImageView = itemView.findViewById(R.id.thumbnail)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,9 +45,7 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
         holder.sizeTextView.text = parseFileLength(songData.size.toLong())
         holder.lastModifiedTextView.text = convertEpochToDate(songData.lastModified.toLong() * 1000)
 
-        Glide.with(context)
-            .asBitmap()
-            .load(songsList[position].artUri)
+        Glide.with(context).asBitmap().load(songsList[position].artUri)
             .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).centerCrop())
             .into(holder.thumbnailImageView)
 
@@ -85,7 +76,8 @@ class AudioAdapter(private var songsList: List<AudioModel>, var context: Context
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
+            val slideIn: Animation =
+                AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }

@@ -23,28 +23,25 @@ class AudioService : Service() {
         mediaSession = MediaSessionCompat(baseContext, "My Music")
         return myBinder
     }
+
     inner class MyBinder : Binder() {
         fun currentService(): AudioService {
             return this@AudioService
         }
     }
 
-    fun showNotification(playPauseBtn: Int, playbackSpeed: Float) {
+    fun showNotification(playPauseBtn: Int) {
 
         val intent = Intent(baseContext, AudioPlayer::class.java)
         intent.putExtra("index", AudioPlayer.songPosition)
         intent.putExtra("class", "AudioNowPlaying")
 
         val contentIntent = PendingIntent.getActivity(
-            this,
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         val prevIntent = Intent(
-            baseContext,
-            AudioNotificationReceiver::class.java
+            baseContext, AudioNotificationReceiver::class.java
         ).setAction(ApplicationClass.PREVIOUS)
         val prevPendingIntent = PendingIntent.getBroadcast(
             baseContext,
@@ -53,11 +50,9 @@ class AudioService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val playIntent =
-            Intent(
-                baseContext,
-                AudioNotificationReceiver::class.java
-            ).setAction(ApplicationClass.PLAY)
+        val playIntent = Intent(
+            baseContext, AudioNotificationReceiver::class.java
+        ).setAction(ApplicationClass.PLAY)
         val playPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -65,11 +60,9 @@ class AudioService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val nextIntent =
-            Intent(
-                baseContext,
-                AudioNotificationReceiver::class.java
-            ).setAction(ApplicationClass.NEXT)
+        val nextIntent = Intent(
+            baseContext, AudioNotificationReceiver::class.java
+        ).setAction(ApplicationClass.NEXT)
         val nextPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -77,11 +70,9 @@ class AudioService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val exitIntent =
-            Intent(
-                baseContext,
-                AudioNotificationReceiver::class.java
-            ).setAction(ApplicationClass.EXIT)
+        val exitIntent = Intent(
+            baseContext, AudioNotificationReceiver::class.java
+        ).setAction(ApplicationClass.EXIT)
         val exitPendingIntent = PendingIntent.getBroadcast(
             baseContext,
             0,
@@ -100,20 +91,15 @@ class AudioService : Service() {
             .setContentIntent(contentIntent)
             .setContentTitle(AudioPlayer.musicListPA[AudioPlayer.songPosition].title)
             .setContentText(AudioPlayer.musicListPA[AudioPlayer.songPosition].title)
-            .setSmallIcon(R.drawable.video_thumbnail)
-            .setLargeIcon(image)
-            .setStyle(
+            .setSmallIcon(R.drawable.video_thumbnail).setLargeIcon(image).setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
-            )
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setOnlyAlertOnce(true)
+            ).setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC).setOnlyAlertOnce(true)
             .addAction(R.drawable.skip_previous_icon, "Previous", prevPendingIntent)
             .addAction(playPauseBtn, "Play", playPendingIntent)
             .addAction(R.drawable.skip_next_icon, "Next", nextPendingIntent)
-            .addAction(R.drawable.exit_icon, "Exit", exitPendingIntent)
-            .build()
+            .addAction(R.drawable.exit_icon, "Exit", exitPendingIntent).build()
 
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             mediaSession.setMetadata(MediaMetadataCompat.Builder()
@@ -136,7 +122,7 @@ class AudioService : Service() {
             AudioPlayer.audioService!!.mediaPlayer?.setDataSource(AudioPlayer.musicListPA[AudioPlayer.songPosition].path)
             AudioPlayer.audioService!!.mediaPlayer?.prepare()
             AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
-            AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 0F)
+            AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark)
 
             AudioPlayer.binding.tvSeekBarStart.text =
                 convertToMMSS(mediaPlayer!!.currentPosition.toString())

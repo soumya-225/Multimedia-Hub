@@ -88,12 +88,12 @@ class ImageViewerActivity : AppCompatActivity() {
 
                 MotionEvent.ACTION_MOVE -> {
                     if (event.action == MotionEvent.ACTION_MOVE && mode == DRAG) {
-                            val dx = event.x - lastTouchX
-                            val dy = event.y - lastTouchY
-                            fullImage.translationX += dx
-                            fullImage.translationY += dy
-                            lastTouchX = event.x
-                            lastTouchY = event.y
+                        val dx = event.x - lastTouchX
+                        val dy = event.y - lastTouchY
+                        fullImage.translationX += dx
+                        fullImage.translationY += dy
+                        lastTouchX = event.x
+                        lastTouchY = event.y
                         adjustTranslationToBounds()
                     }
                 }
@@ -120,7 +120,7 @@ class ImageViewerActivity : AppCompatActivity() {
     }
 
     private fun back() {
-        back.setOnClickListener {finish()}
+        back.setOnClickListener { finish() }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

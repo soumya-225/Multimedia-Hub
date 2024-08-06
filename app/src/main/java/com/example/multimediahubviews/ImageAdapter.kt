@@ -23,17 +23,10 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var thumbnailImageView: ImageView
-        var titleTextView: TextView
-        var sizeTextView: TextView
-        var lastModifiedTextView: TextView
-
-        init {
-            thumbnailImageView = itemView.findViewById(R.id.image_thumbnail)
-            titleTextView = itemView.findViewById(R.id.image_file_name)
-            sizeTextView = itemView.findViewById(R.id.image_file_size)
-            lastModifiedTextView = itemView.findViewById(R.id.image_last_modified)
-        }
+        var thumbnailImageView: ImageView = itemView.findViewById(R.id.image_thumbnail)
+        var titleTextView: TextView = itemView.findViewById(R.id.image_file_name)
+        var sizeTextView: TextView = itemView.findViewById(R.id.image_file_size)
+        var lastModifiedTextView: TextView = itemView.findViewById(R.id.image_last_modified)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,17 +37,16 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        Glide.with(context)
-            .load(imageList[position].path)
-            .apply(RequestOptions().centerCrop())
+        Glide.with(context).load(imageList[position].path).apply(RequestOptions().centerCrop())
             .into(holder.thumbnailImageView)
 
         val imageModel: ImageModel = imageList[position]
         holder.titleTextView.text = imageModel.title
         holder.sizeTextView.text = parseFileLength(imageModel.size.toLong())
-        holder.lastModifiedTextView.text = convertEpochToDate(imageModel.lastModified.toLong() * 1000)
+        holder.lastModifiedTextView.text =
+            convertEpochToDate(imageModel.lastModified.toLong() * 1000)
 
-        setAnimation(holder.itemView,position)
+        setAnimation(holder.itemView, position)
 
         holder.itemView.setOnClickListener {
             val parseData = imageList[position].path.toString()
@@ -65,12 +57,11 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
                 androidx.appcompat.R.anim.abc_fade_in,
                 androidx.appcompat.R.anim.abc_fade_out
             )
-            val intent = Intent(context, ImageViewerActivity::class.java)
-                .putExtra("parseData", parseData)
-                .putExtra("fileName", fileName)
-                .addFlags(FLAG_ACTIVITY_NEW_TASK)
+            val intent =
+                Intent(context, ImageViewerActivity::class.java).putExtra("parseData", parseData)
+                    .putExtra("fileName", fileName).addFlags(FLAG_ACTIVITY_NEW_TASK)
 
-            context.startActivity(intent,options.toBundle())
+            context.startActivity(intent, options.toBundle())
         }
     }
 
@@ -84,9 +75,10 @@ class ImageAdapter(private var imageList: ArrayList<ImageModel>, private var con
         this.notifyDataSetChanged()
     }
 
-    private fun setAnimation(viewToAnimate: View, position: Int){
+    private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
+            val slideIn: Animation =
+                AnimationUtils.loadAnimation(context, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }

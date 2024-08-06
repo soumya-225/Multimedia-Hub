@@ -21,15 +21,9 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
     private var lastPosition: Int = -1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var titleTextView: TextView
-        var sizeTextView: TextView
-        var lastModifiedTextView: TextView
-
-        init {
-            titleTextView = itemView.findViewById(R.id.pdf_file_name)
-            sizeTextView = itemView.findViewById(R.id.pdf_file_size)
-            lastModifiedTextView = itemView.findViewById(R.id.pdf_last_modified)
-        }
+        var titleTextView: TextView = itemView.findViewById(R.id.pdf_file_name)
+        var sizeTextView: TextView = itemView.findViewById(R.id.pdf_file_size)
+        var lastModifiedTextView: TextView = itemView.findViewById(R.id.pdf_last_modified)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -72,7 +66,8 @@ class PdfAdapter(private var list: List<File>, private var activity: Activity) :
 
     private fun setAnimation(viewToAnimate: View, position: Int) {
         if (position > lastPosition) {
-            val slideIn: Animation = AnimationUtils.loadAnimation(activity, R.anim.recycler_view_item_anim_2)
+            val slideIn: Animation =
+                AnimationUtils.loadAnimation(activity, R.anim.recycler_view_item_anim_2)
             viewToAnimate.startAnimation(slideIn)
             lastPosition = position
         }

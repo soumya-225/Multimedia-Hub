@@ -63,12 +63,8 @@ class MainActivity : AppCompatActivity() {
             val screenHeight = binding.root.rootView.height
             val keypadHeight = screenHeight - rect.bottom
             bottomNav.visibility =
-                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE ||
-                    (keypadHeight > screenHeight * 0.15)
-                )
-                    View.GONE
-                else
-                    View.VISIBLE
+                if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE || (keypadHeight > screenHeight * 0.15)) View.GONE
+                else View.VISIBLE
         }
 
         val adapterViewPager = AdapterViewPager(this, fragmentArrList)
@@ -85,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun onPermissionGranted(){
+    private fun onPermissionGranted() {
         pagerMain.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 when (position) {
@@ -128,8 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestStoragePermissions() {
-        AlertDialog.Builder(this)
-            .setTitle("Allow Access to Internal Storage")
+        AlertDialog.Builder(this).setTitle("Allow Access to Internal Storage")
             .setMessage("Internal Storage Permission is required to access the files")
             .setPositiveButton("OK") { _, _ ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -140,22 +135,22 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 0)
                 }
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            }.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
-                Toast.makeText(this, "The application cannot work without storage permission", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "The application cannot work without storage permission",
+                    Toast.LENGTH_SHORT
+                ).show()
                 finish()
-            }
-            .setCancelable(false)
-            .show()
+            }.setCancelable(false).show()
     }
 
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
         isPermissionGrantedOnResume = Environment.isExternalStorageManager()
-        if (isPermissionGranted != isPermissionGrantedOnResume)
-            recreate()
+        if (isPermissionGranted != isPermissionGrantedOnResume) recreate()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

@@ -19,7 +19,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.multimediahubviews.R.*
+import com.example.multimediahubviews.R.drawable
+import com.example.multimediahubviews.R.layout
+import com.example.multimediahubviews.R.menu
 import com.example.multimediahubviews.databinding.FragmentPdfBinding
 import java.io.File
 import java.util.Locale
@@ -38,8 +40,7 @@ class PdfFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(layout.fragment_pdf, container, false)
         binding = FragmentPdfBinding.bind(view)
@@ -56,18 +57,19 @@ class PdfFragment : Fragment() {
             searchView = view.findViewById(R.id.search_view1)
             binding.searchView2.visibility = View.GONE
             binding.searchView1.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, drawable.scroll_icon_dark, activity?.theme)
+            binding.recyclerView.verticalScrollbarThumbDrawable =
+                ResourcesCompat.getDrawable(resources, drawable.scroll_icon_dark, activity?.theme)
 
 
-        }
-        else{
+        } else {
             binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setIcon(drawable.light_mode_icon)
             binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_light)
             binding.topAppBar.menu.findItem(R.id.sort_switch).setIcon(drawable.sort_icon_light)
             searchView = view.findViewById(R.id.search_view2)
             binding.searchView1.visibility = View.GONE
             binding.searchView2.visibility = View.VISIBLE
-            binding.recyclerView.verticalScrollbarThumbDrawable = ResourcesCompat.getDrawable(resources, drawable.scroll_icon_light, activity?.theme)
+            binding.recyclerView.verticalScrollbarThumbDrawable =
+                ResourcesCompat.getDrawable(resources, drawable.scroll_icon_light, activity?.theme)
         }
 
 
@@ -92,11 +94,10 @@ class PdfFragment : Fragment() {
         binding.topAppBar.menu.findItem(R.id.dark_mode_switch).setOnMenuItemClickListener {
             notDarkModeState = !notDarkModeState
             if (notDarkModeState) {
-                Toast.makeText(context,"Turning Off Dark Mode...",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Turning Off Dark Mode...", Toast.LENGTH_SHORT).show()
                 lightMode()
-            }
-            else {
-                Toast.makeText(context,"Turning On Dark Mode...",Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Turning On Dark Mode...", Toast.LENGTH_SHORT).show()
                 darkMode()
             }
             true
@@ -123,12 +124,14 @@ class PdfFragment : Fragment() {
 
     private fun setUpView() {
         spanCount = if (isGridPdf) {
-            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(drawable.list_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.list_icon_light)
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 6
             else 3
         } else {
-            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_dark)
+            if (notDarkModeState) binding.topAppBar.menu.findItem(R.id.view_switch)
+                .setIcon(drawable.grid_icon_dark)
             else binding.topAppBar.menu.findItem(R.id.view_switch).setIcon(drawable.grid_icon_light)
             1
         }

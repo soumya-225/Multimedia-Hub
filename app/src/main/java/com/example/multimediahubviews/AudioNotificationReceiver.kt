@@ -25,7 +25,7 @@ class AudioNotificationReceiver : BroadcastReceiver() {
     private fun playMusic() {
         AudioPlayer.isPlaying = true
         AudioPlayer.audioService!!.mediaPlayer!!.start()
-        AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.pause_icon_dark)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
         AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.pause_icon_dark)
     }
@@ -33,7 +33,7 @@ class AudioNotificationReceiver : BroadcastReceiver() {
     private fun pauseMusic() {
         AudioPlayer.isPlaying = false
         AudioPlayer.audioService!!.mediaPlayer!!.pause()
-        AudioPlayer.audioService!!.showNotification(R.drawable.play_icon_dark, 0F)
+        AudioPlayer.audioService!!.showNotification(R.drawable.play_icon_dark)
         AudioPlayer.binding.playPauseBtnPA.setIconResource(R.drawable.play_icon_dark)
         AudioNowPlaying.binding.playPauseBtnNP.setImageResource(R.drawable.play_icon_dark)
     }
@@ -42,21 +42,21 @@ class AudioNotificationReceiver : BroadcastReceiver() {
         setSongPosition(increment)
         AudioPlayer.audioService!!.createMediaPlayer()
 
-        Glide.with(context)
-            .asBitmap()
+        Glide.with(context).asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
             .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).fitCenter())
             .into(AudioNowPlaying.binding.songImgNP)
 
-        AudioNowPlaying.binding.songNameNP.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioNowPlaying.binding.songNameNP.text =
+            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
-        Glide.with(context)
-            .asBitmap()
+        Glide.with(context).asBitmap()
             .load(AudioPlayer.musicListPA[AudioPlayer.songPosition].artUri)
             .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail).fitCenter())
             .into(AudioPlayer.binding.songImgPA)
 
-        AudioPlayer.binding.songNamePA.text = AudioPlayer.musicListPA[AudioPlayer.songPosition].title
+        AudioPlayer.binding.songNamePA.text =
+            AudioPlayer.musicListPA[AudioPlayer.songPosition].title
 
         playMusic()
     }

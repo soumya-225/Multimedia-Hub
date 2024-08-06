@@ -42,7 +42,8 @@ class VideoPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         requestWindowFeature(android.view.Window.FEATURE_NO_TITLE)
-        window.attributes.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        window.attributes.layoutInDisplayCutoutMode =
+            WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
         binding = ActivityPlayerBinding.inflate(layoutInflater)
 
         setTheme(R.style.playerActivityTheme)
@@ -60,11 +61,7 @@ class VideoPlayerActivity : AppCompatActivity() {
                 playerList = ArrayList()
                 position = 0
                 val cursor = contentResolver.query(
-                    intent.data!!,
-                    arrayOf(MediaStore.Video.Media.DATA),
-                    null,
-                    null,
-                    null
+                    intent.data!!, arrayOf(MediaStore.Video.Media.DATA), null, null, null
                 )
                 cursor?.let {
                     it.moveToFirst()
@@ -160,8 +157,7 @@ class VideoPlayerActivity : AppCompatActivity() {
 
         findViewById<ImageButton>(R.id.orientationBtn).setOnClickListener {
             requestedOrientation =
-                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT)
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                if (resources.configuration.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT) ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
                 else ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
         }
     }
@@ -211,12 +207,10 @@ class VideoPlayerActivity : AppCompatActivity() {
     private fun setPosition(isIncrement: Boolean = true) {
         if (!repeat) {
             if (isIncrement) {
-                if (playerList.size - 1 == position)
-                    position = 0
+                if (playerList.size - 1 == position) position = 0
                 else ++position
             } else {
-                if (position == 0)
-                    position = playerList.size - 1
+                if (position == 0) position = playerList.size - 1
                 else --position
             }
         }

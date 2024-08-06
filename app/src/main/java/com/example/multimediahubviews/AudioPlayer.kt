@@ -47,9 +47,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             musicListPA = ArrayList()
             musicListPA.add(getMusicDetails(intent.data!!))
 
-            Glide.with(this)
-                .asBitmap()
-                .load(getImgArt(musicListPA[songPosition].path))
+            Glide.with(this).asBitmap().load(getImgArt(musicListPA[songPosition].path))
                 .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
                 .into(binding.songImgPA)
 
@@ -76,6 +74,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                     audioService!!.mediaPlayer!!.seekTo(progress)
                 }
             }
+
             override fun onStartTrackingTouch(seekBar: SeekBar?) = Unit
             override fun onStopTrackingTouch(seekBar: SeekBar?) = Unit
         })
@@ -98,8 +97,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             try {
                 val eqIntent = Intent(AudioEffect.ACTION_DISPLAY_AUDIO_EFFECT_CONTROL_PANEL)
                 eqIntent.putExtra(
-                    AudioEffect.EXTRA_AUDIO_SESSION,
-                    audioService!!.mediaPlayer!!.audioSessionId
+                    AudioEffect.EXTRA_AUDIO_SESSION, audioService!!.mediaPlayer!!.audioSessionId
                 )
                 eqIntent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, baseContext.packageName)
                 eqIntent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MUSIC)
@@ -123,9 +121,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
     }
 
     private fun setLayout() {
-        Glide.with(this)
-            .asBitmap()
-            .load(musicListPA[songPosition].artUri)
+        Glide.with(this).asBitmap().load(musicListPA[songPosition].artUri)
             .apply(RequestOptions().placeholder(R.drawable.audio_thumbnail_2).centerCrop())
             .into(binding.songImgPA)
 
@@ -133,8 +129,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
 
         if (repeat) binding.repeatBtnPA.setColorFilter(
             ContextCompat.getColor(
-                this,
-                R.color.purple_500
+                this, R.color.purple_500
             )
         )
     }
@@ -148,7 +143,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
             audioService!!.mediaPlayer?.start()
             isPlaying = true
             binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
-            audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+            audioService!!.showNotification(R.drawable.pause_icon_dark)
 
             binding.tvSeekBarStart.text =
                 convertToMMSS(audioService!!.mediaPlayer!!.currentPosition.toString())
@@ -175,6 +170,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                 musicListPA.addAll(AudioFragment.musicListMA)
                 setLayout()
             }
+
             "AudioNowPlaying" -> {
                 Log.d("Tag2", songPosition.toString())
                 setLayout()
@@ -185,6 +181,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
                 binding.seekBarPA.progress = audioService!!.mediaPlayer!!.currentPosition
                 binding.seekBarPA.max = audioService!!.mediaPlayer!!.duration
             }
+
             "MainActivity" -> {
                 val intent = Intent(this, AudioService::class.java)
                 bindService(intent, this, BIND_AUTO_CREATE)
@@ -214,14 +211,14 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
 
     private fun playMusic() {
         binding.playPauseBtnPA.setIconResource(R.drawable.pause_icon_dark)
-        audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+        audioService!!.showNotification(R.drawable.pause_icon_dark)
         isPlaying = true
         audioService!!.mediaPlayer?.start()
     }
 
     private fun pauseMusic() {
         binding.playPauseBtnPA.setIconResource(R.drawable.play_icon_dark)
-        audioService!!.showNotification(R.drawable.play_icon_dark, 0F)
+        audioService!!.showNotification(R.drawable.play_icon_dark)
         isPlaying = false
         audioService!!.mediaPlayer?.pause()
     }
@@ -245,7 +242,7 @@ class AudioPlayer : AppCompatActivity(), ServiceConnection, MediaPlayer.OnComple
         audioService = binder.currentService()
         createMediaPlayer()
         audioService!!.seekBarSetup()
-        audioService!!.showNotification(R.drawable.pause_icon_dark, 1F)
+        audioService!!.showNotification(R.drawable.pause_icon_dark)
     }
 
     override fun onServiceDisconnected(name: ComponentName?) {
@@ -280,12 +277,12 @@ fun getImgArt(path: String): ByteArray? {
 fun setSongPosition(increment: Boolean) {
     if (!AudioPlayer.repeat) {
         if (increment) {
-            if (AudioPlayer.musicListPA.size - 1 == AudioPlayer.songPosition)
-                AudioPlayer.songPosition = 0
+            if (AudioPlayer.musicListPA.size - 1 == AudioPlayer.songPosition) AudioPlayer.songPosition =
+                0
             else ++AudioPlayer.songPosition
         } else {
-            if (AudioPlayer.songPosition == 0)
-                AudioPlayer.songPosition = AudioPlayer.musicListPA.size - 1
+            if (AudioPlayer.songPosition == 0) AudioPlayer.songPosition =
+                AudioPlayer.musicListPA.size - 1
             else --AudioPlayer.songPosition
 
         }
